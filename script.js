@@ -766,21 +766,46 @@ class ContactFormHandler {
         this.setLoading(true);
 
         try {
-            // Try Netlify Function first (for Netlify deployments)
-            let response = await fetch('/.netlify/functions/send-email', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name,
-                    email,
-                    phone,
-                    message
-                })
-            }).catch(() => null);
+            // Configuration: Set your proxy URL here after deploying backend-proxy
+            // Deploy backend-proxy to Render.com or Railway.app (see backend-proxy/README.md)
+            // Then replace PROXY_URL_HERE with your deployed URL
+            const PROXY_URL = 'PROXY_URL_HERE'; // e.g., 'https://gourmet-haus-email-proxy.onrender.com'
+            
+            let response = null;
+            
+            // Try custom proxy first (if configured)
+            if (PROXY_URL && PROXY_URL !== 'PROXY_URL_HERE') {
+                response = await fetch(`${PROXY_URL}/send-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        message
+                    })
+                }).catch(() => null);
+            }
+            
+            // Try Netlify Function if proxy not configured or failed
+            if (!response || !response.ok) {
+                response = await fetch('/.netlify/functions/send-email', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        message
+                    })
+                }).catch(() => null);
+            }
 
-            // If Netlify function not available (GitHub Pages), use Formspree fallback
+            // Fallback to Formspree if both proxy and Netlify unavailable
             if (!response || !response.ok) {
                 response = await fetch('https://formspree.io/f/mjkvdwkq', {
                     method: 'POST',
