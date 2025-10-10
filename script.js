@@ -139,9 +139,9 @@ class GourmetHausExperience {
         // Update active navigation link
         this.updateActiveNavLink();
         
-        // Parallax hero section - removed opacity change to prevent flickering
+        // Parallax hero section - disabled on mobile to prevent flickering
         const heroSection = document.querySelector('.hero-section');
-        if (heroSection && scrolled < window.innerHeight) {
+        if (heroSection && scrolled < window.innerHeight && window.innerWidth > 1024) {
             heroSection.style.transform = `translate3d(0, ${scrolled * 0.5}px, 0)`;
         }
         
@@ -322,6 +322,11 @@ class GourmetHausExperience {
     // PARALLAX EFFECTS
     // ============================================
     setupParallaxEffects() {
+        // Disable parallax on mobile/touch devices for better performance
+        if ('ontouchstart' in window || window.innerWidth <= 1024) {
+            return;
+        }
+        
         let ticking = false;
         let lastMoveTime = Date.now();
         
@@ -616,6 +621,13 @@ class LoadingScreenManager {
             setTimeout(() => {
                 this.loadingScreen.style.display = 'none';
                 document.body.classList.add('loaded');
+                
+                // Ensure hero section is visible and properly positioned after loading
+                const heroSection = document.querySelector('.hero-section');
+                if (heroSection) {
+                    heroSection.style.opacity = '1';
+                    heroSection.style.transform = 'translateZ(0)';
+                }
             }, 1000);
         }
     }

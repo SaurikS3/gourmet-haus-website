@@ -290,9 +290,11 @@ body {
     position: relative;
     overflow: hidden;
     margin-top: 80px;
-    will-change: opacity, transform;
+    will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .hero-parallax-layers {
@@ -1052,9 +1054,23 @@ body {
 }
 
 /* ============================================
-   RESPONSIVE DESIGN
+   MOBILE OPTIMIZATION - REDUCE ANIMATIONS
    ============================================ */
 @media (max-width: 1024px) {
+    /* Disable parallax effects on mobile for better performance */
+    .parallax-layer,
+    .orb {
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    /* Reduce hero animations */
+    .brand-name .letter {
+        animation: none !important;
+        filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
+        will-change: auto;
+    }
+    
     .luxury-nav {
         padding: 1.5rem 2rem;
     }
@@ -1067,6 +1083,10 @@ body {
         padding: 0 1.5rem;
     }
 }
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
 
 @media (max-width: 768px) {
     .luxury-nav {
