@@ -766,65 +766,29 @@ class ContactFormHandler {
         this.setLoading(true);
 
         try {
-            // Use Mailsend API
-            const mailsendToken = 'mlsn.42fa3aa11937d6ee6999b72dc274bbaae0e1d502696b0514370d778b760f360d';
-            
-            // Construct email body with HTML formatting
-            const emailBody = `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #d4af37; border-bottom: 2px solid #d4af37; padding-bottom: 10px;">
-                        New Contact Form Submission - Gourmet Haus
-                    </h2>
-                    <div style="margin: 20px 0;">
-                        <p><strong>Name:</strong> ${name}</p>
-                        <p><strong>Email:</strong> ${email}</p>
-                        <p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
-                        <p><strong>Date:</strong> ${new Date().toLocaleString()}</p>
-                    </div>
-                    <div style="background: #f8f6f0; padding: 15px; border-left: 4px solid #d4af37; margin: 20px 0;">
-                        <h3 style="color: #2a2520; margin-top: 0;">Message:</h3>
-                        <p style="white-space: pre-wrap;">${message}</p>
-                    </div>
-                    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-                    <p style="color: #666; font-size: 12px;">
-                        This email was sent from the Gourmet Haus contact form.
-                    </p>
-                </div>
-            `;
-            
-            const response = await fetch('https://api.mailsend.app/v1/email', {
+            // Call secure backend endpoint (Netlify Function)
+            // The API token is securely stored on the backend, not exposed to the client
+            const response = await fetch('/.netlify/functions/send-email', {
                 method: 'POST',
                 headers: {
-                    'X-API-Key': mailsendToken,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    to: {
-                        email: 'haidarihammad@gmail.com',
-                        name: 'Gourmet Haus'
-                    },
-                    from: {
-                        email: 'contact@gourmethaus.com',
-                        name: 'Gourmet Haus Website'
-                    },
-                    reply_to: {
-                        email: email,
-                        name: name
-                    },
-                    subject: `New Contact Form Message from ${name}`,
-                    html: emailBody,
-                    text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\n\nMessage:\n${message}`
+                    name,
+                    email,
+                    phone,
+                    message
                 })
             });
 
             if (!response.ok) {
                 const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
             }
 
             const result = await response.json();
 
-            if (result.success || response.ok) {
+            if (result.success) {
                 this.showMessage('Thank you for your message! We will get back to you soon.', 'success');
                 this.form.reset();
                 
