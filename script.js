@@ -537,10 +537,11 @@ class GourmetHausExperience {
     // ============================================
     setupContactForm() {
         const form = document.getElementById('contactForm');
+        const formResponse = document.getElementById('formResponse');
         
         if (!form) return;
         
-        // Add floating label effect only - let form submit naturally
+        // Add floating label effect
         const formInputs = form.querySelectorAll('.form-input');
         formInputs.forEach(input => {
             input.addEventListener('focus', () => {
@@ -556,6 +557,55 @@ class GourmetHausExperience {
             // Check if input has value on load
             if (input.value) {
                 input.parentElement.classList.add('focused');
+            }
+        });
+        
+        // Handle form submission with AJAX
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('.form-submit');
+            const submitText = submitBtn.querySelector('.submit-text');
+            const originalText = submitText.textContent;
+            
+            // Disable submit button and show loading
+            submitBtn.disabled = true;
+            submitText.textContent = 'Sending...';
+            
+            // Clear previous messages
+            formResponse.textContent = '';
+            formResponse.className = 'form-response';
+            
+            try {
+                const formData = new FormData(form);
+                
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    formResponse.textContent = 'Thank you! Your message has been sent successfully.';
+                    formResponse.classList.add('success');
+                    form.reset();
+                    
+                    // Remove focused class from all inputs
+                    formInputs.forEach(input => {
+                        input.parentElement.classList.remove('focused');
+                    });
+                } else {
+                    formResponse.textContent = 'Sorry, there was an error. Please try again.';
+                    formResponse.classList.add('error');
+                }
+            } catch (error) {
+                formResponse.textContent = 'Sorry, there was an error. Please try again.';
+                formResponse.classList.add('error');
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitText.textContent = originalText;
             }
         });
     }

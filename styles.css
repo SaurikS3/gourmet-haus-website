@@ -2225,6 +2225,47 @@ button:focus {
     }
 }
 
+/* Form response messages */
+.form-response {
+    margin-top: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.4s ease;
+}
+
+.form-response.success,
+.form-response.error {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.form-response.success {
+    background: linear-gradient(135deg, 
+        rgba(76, 175, 80, 0.1) 0%,
+        rgba(76, 175, 80, 0.05) 100%);
+    border: 2px solid rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+}
+
+.form-response.error {
+    background: linear-gradient(135deg, 
+        rgba(244, 67, 54, 0.1) 0%,
+        rgba(244, 67, 54, 0.05) 100%);
+    border: 2px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
+}
+
+/* Form submit button disabled state */
+.form-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 /* Responsive adjustments for contact form */
 @media (max-width: 768px) {
     .contact-section {
