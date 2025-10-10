@@ -46,12 +46,12 @@ netlify deploy --prod
 2. Click "Add a variable"
 3. Add:
    - **Key:** `MAILSEND_API_TOKEN`
-   - **Value:** `mlsn.524a11408a6d9fa2c4be88a6785ce746c2a75bedbfdac0fa0dd7930a85ce2e46`
+   - **Value:** `[Your Mailsend API token - DO NOT commit this to Git]`
 4. Click "Save"
 
 #### Via Netlify CLI:
 ```bash
-netlify env:set MAILSEND_API_TOKEN "mlsn.524a11408a6d9fa2c4be88a6785ce746c2a75bedbfdac0fa0dd7930a85ce2e46"
+netlify env:set MAILSEND_API_TOKEN "YOUR_MAILSEND_API_TOKEN_HERE"
 ```
 
 ### 3. Trigger Redeploy
@@ -95,7 +95,7 @@ Recipient Email
 npm install -g netlify-cli
 
 # Set local environment variable
-netlify env:set MAILSEND_API_TOKEN "mlsn.524a11408a6d9fa2c4be88a6785ce746c2a75bedbfdac0fa0dd7930a85ce2e46"
+netlify env:set MAILSEND_API_TOKEN "YOUR_MAILSEND_API_TOKEN_HERE"
 
 # Run local dev server with functions
 netlify dev
