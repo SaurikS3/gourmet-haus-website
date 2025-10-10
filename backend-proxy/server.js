@@ -78,10 +78,12 @@ app.post('/send-email', async (req, res) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                to: {
-                    email: 'haidarihammad@gmail.com',
-                    name: 'Gourmet Haus'
-                },
+                to: [
+                    {
+                        email: 'haidarihammad@gmail.com',
+                        name: 'Gourmet Haus'
+                    }
+                ],
                 from: {
                     email: 'contact@gourmethaus.com',
                     name: 'Gourmet Haus Website'
