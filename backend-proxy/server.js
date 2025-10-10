@@ -70,8 +70,8 @@ app.post('/send-email', async (req, res) => {
             </div>
         `;
 
-        // Call Mailsend API
-        const response = await fetch('https://api.mailsend.app/v1/email', {
+        // Call Mailsend API (trying mailsend.com instead of mailsend.app)
+        const response = await fetch('https://api.mailsend.com/v1/email', {
             method: 'POST',
             headers: {
                 'X-API-Key': mailsendToken,
