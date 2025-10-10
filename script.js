@@ -611,7 +611,13 @@ class GourmetHausExperience {
                 }
             } catch (error) {
                 console.error('Form submission error:', error);
-                formResponse.textContent = 'Sorry, there was an error. Please try again.';
+                
+                // Provide helpful error message for local development
+                if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    formResponse.innerHTML = 'Local development detected. Please run <code>vercel dev</code> to test the contact form, or deploy to Vercel.<br><small>See DEPLOYMENT.md for instructions.</small>';
+                } else {
+                    formResponse.textContent = 'Sorry, there was an error. Please try again.';
+                }
                 formResponse.classList.add('error');
             } finally {
                 // Re-enable submit button
