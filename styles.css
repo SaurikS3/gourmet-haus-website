@@ -1057,6 +1057,16 @@ body {
     opacity: 0.8;
 }
 
+.footer-section p a,
+.footer-section p a:link,
+.footer-section p a:visited,
+.footer-section p a:hover,
+.footer-section p a:active {
+    color: var(--platinum);
+    text-decoration: none;
+    opacity: 0.8;
+}
+
 /* ============================================
    MOBILE OPTIMIZATION - REDUCE ANIMATIONS
    ============================================ */
@@ -1265,6 +1275,10 @@ body {
         grid-template-columns: 1fr;
         gap: 2rem;
     }
+    
+    .footer-section p {
+        font-size: 1.125rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1369,7 +1383,7 @@ body {
     }
     
     .footer-section p {
-        font-size: 0.9375rem;
+        font-size: 1.0625rem;
     }
 }
 
