@@ -560,7 +560,7 @@ class GourmetHausExperience {
             }
         });
         
-        // Handle form submission with AJAX
+        // Handle form submission with AJAX to serverless function
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -577,11 +577,21 @@ class GourmetHausExperience {
             formResponse.className = 'form-response';
             
             try {
-                const formData = new FormData(form);
+                // Get form data
+                const formData = {
+                    name: form.querySelector('#name').value,
+                    email: form.querySelector('#customer_email').value,
+                    phone: form.querySelector('#phone').value,
+                    message: form.querySelector('#message').value
+                };
                 
-                const response = await fetch('https://api.web3forms.com/submit', {
+                // Send to serverless API endpoint
+                const response = await fetch('/api/send-email', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
                 });
                 
                 const data = await response.json();
@@ -596,10 +606,11 @@ class GourmetHausExperience {
                         input.parentElement.classList.remove('focused');
                     });
                 } else {
-                    formResponse.textContent = 'Sorry, there was an error. Please try again.';
+                    formResponse.textContent = data.error || 'Sorry, there was an error. Please try again.';
                     formResponse.classList.add('error');
                 }
             } catch (error) {
+                console.error('Form submission error:', error);
                 formResponse.textContent = 'Sorry, there was an error. Please try again.';
                 formResponse.classList.add('error');
             } finally {

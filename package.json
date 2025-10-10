@@ -1,0 +1,17 @@
+{
+  "name": "gourmet-haus-website",
+  "version": "1.0.0",
+  "description": "Gourmet Haus luxury dining website",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "deploy": "vercel --prod"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.7"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}
