@@ -766,61 +766,22 @@ class ContactFormHandler {
         this.setLoading(true);
 
         try {
-            // Configuration: Secure backend proxy deployed on Render.com
-            // API token is stored securely in environment variables
-            const PROXY_URL = 'https://gourmet-haus-email-proxy.onrender.com';
-            
-            let response = null;
-            
-            // Try custom proxy first (if configured)
-            if (PROXY_URL && PROXY_URL !== 'PROXY_URL_HERE') {
-                response = await fetch(`${PROXY_URL}/send-email`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        message
-                    })
-                }).catch(() => null);
-            }
-            
-            // Try Netlify Function if proxy not configured or failed
-            if (!response || !response.ok) {
-                response = await fetch('/.netlify/functions/send-email', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        message
-                    })
-                }).catch(() => null);
-            }
-
-            // Fallback to Formspree if both proxy and Netlify unavailable
-            if (!response || !response.ok) {
-                response = await fetch('https://formspree.io/f/mjkvdwkq', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        phone,
-                        message,
-                        _subject: `New Contact - ${name}`
-                    })
-                });
-            }
+            // Use Formspree as primary email service
+            // Formspree is reliable and doesn't require backend infrastructure
+            const response = await fetch('https://formspree.io/f/mjkvdwkq', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    phone,
+                    message,
+                    _subject: `New Contact Form Message from ${name} - Gourmet Haus`
+                })
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
