@@ -15,10 +15,15 @@ class GourmetHausExperience {
     }
 
     init() {
-        if (this.canvas && this.ctx) {
+        // Disable particles on mobile for better performance
+        const isMobile = window.innerWidth <= 1024;
+        if (this.canvas && this.ctx && !isMobile) {
             this.setupCanvas();
             this.createParticles();
             this.animateParticles();
+        } else if (this.canvas && isMobile) {
+            // Hide canvas on mobile
+            this.canvas.style.display = 'none';
         }
         
         this.setupScrollAnimations();
@@ -47,8 +52,10 @@ class GourmetHausExperience {
 
     createParticles() {
         this.particles = [];
-        // Reduced particle count for better performance
-        const particleCount = Math.floor((window.innerWidth * window.innerHeight) / 25000);
+        // Significantly reduced particle count on mobile for better performance
+        const isMobile = window.innerWidth <= 1024;
+        const baseCount = isMobile ? 50000 : 25000; // Less particles on mobile
+        const particleCount = Math.floor((window.innerWidth * window.innerHeight) / baseCount);
         
         for (let i = 0; i < particleCount; i++) {
             this.particles.push({

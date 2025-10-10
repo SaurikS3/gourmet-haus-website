@@ -293,8 +293,10 @@ body {
     will-change: transform;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .hero-parallax-layers {
@@ -342,6 +344,8 @@ body {
     text-align: center;
     position: relative;
     padding: 4rem 2rem;
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
 }
 
 .brand-ornament {
@@ -1057,11 +1061,19 @@ body {
    MOBILE OPTIMIZATION - REDUCE ANIMATIONS
    ============================================ */
 @media (max-width: 1024px) {
+    /* Force hardware acceleration on mobile */
+    * {
+        -webkit-transform: translate3d(0, 0, 0);
+        -webkit-backface-visibility: hidden;
+        -webkit-perspective: 1000;
+    }
+    
     /* Disable parallax effects on mobile for better performance */
     .parallax-layer,
     .orb {
         animation: none !important;
-        transform: none !important;
+        transform: translate3d(0, 0, 0) !important;
+        will-change: auto !important;
     }
     
     /* Reduce hero animations */
@@ -1069,6 +1081,36 @@ body {
         animation: none !important;
         filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.3));
         will-change: auto;
+        transform: translate3d(0, 0, 0);
+    }
+    
+    /* Disable all ornament animations on mobile */
+    .brand-ornament,
+    .divider-diamond,
+    .scroll-arrow {
+        animation: none !important;
+    }
+    
+    /* Optimize hero section for mobile */
+    .hero-section {
+        transform: translate3d(0, 0, 0) !important;
+        will-change: auto;
+    }
+    
+    .brand-name::before {
+        animation: none !important;
+    }
+    
+    /* Disable tagline animations on mobile */
+    .tagline-word {
+        animation: none !important;
+        opacity: 1;
+    }
+    
+    /* Disable scroll indicator animation on mobile */
+    .scroll-indicator {
+        animation: none !important;
+        opacity: 1;
     }
     
     .luxury-nav {
@@ -1081,6 +1123,7 @@ body {
     
     .menu-container {
         padding: 0 1.5rem;
+        transform: translate3d(0, 0, 0);
     }
 }
 
