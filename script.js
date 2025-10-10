@@ -792,26 +792,39 @@ class ContactFormHandler {
                 </div>
             `;
             
-            const response = await fetch('https://mailsend.app/api/v1/send', {
+            const response = await fetch('https://api.mailsend.app/v1/email', {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${mailsendToken}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'X-API-Key': mailsendToken,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    to: 'haidarihammad@gmail.com',
-                    from: 'noreply@gourmethaus.com',
-                    reply_to: email,
+                    to: {
+                        email: 'haidarihammad@gmail.com',
+                        name: 'Gourmet Haus'
+                    },
+                    from: {
+                        email: 'contact@gourmethaus.com',
+                        name: 'Gourmet Haus Website'
+                    },
+                    reply_to: {
+                        email: email,
+                        name: name
+                    },
                     subject: `New Contact Form Message from ${name}`,
                     html: emailBody,
                     text: `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\n\nMessage:\n${message}`
                 })
             });
 
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
             const result = await response.json();
 
-            if (response.ok && result.success) {
+            if (result.success || response.ok) {
                 this.showMessage('Thank you for your message! We will get back to you soon.', 'success');
                 this.form.reset();
                 
