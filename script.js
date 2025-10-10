@@ -537,65 +537,10 @@ class GourmetHausExperience {
     // ============================================
     setupContactForm() {
         const form = document.getElementById('contactForm');
-        const formResponse = document.getElementById('formResponse');
         
         if (!form) return;
         
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            const submitBtn = form.querySelector('.form-submit');
-            const submitText = submitBtn.querySelector('.submit-text');
-            const originalText = submitText.textContent;
-            
-            // Disable form and show loading state
-            submitBtn.disabled = true;
-            submitText.textContent = 'Sending...';
-            submitBtn.style.opacity = '0.7';
-            formResponse.textContent = '';
-            formResponse.className = 'form-response';
-            
-            try {
-                const formData = new FormData(form);
-                
-                const response = await fetch('https://api.web3forms.com/submit', {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    // Success message
-                    formResponse.textContent = '✓ Thank you! Your message has been sent successfully.';
-                    formResponse.className = 'form-response success';
-                    form.reset();
-                    
-                    // Reset button after delay
-                    setTimeout(() => {
-                        submitText.textContent = originalText;
-                        submitBtn.disabled = false;
-                        submitBtn.style.opacity = '1';
-                        formResponse.textContent = '';
-                    }, 5000);
-                } else {
-                    throw new Error(data.message || 'Form submission failed');
-                }
-            } catch (error) {
-                // Error message
-                formResponse.textContent = '✗ Sorry, there was an error sending your message. Please try again.';
-                formResponse.className = 'form-response error';
-                
-                // Reset button
-                submitText.textContent = originalText;
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                
-                console.error('Form submission error:', error);
-            }
-        });
-        
-        // Add floating label effect
+        // Add floating label effect only - let form submit naturally
         const formInputs = form.querySelectorAll('.form-input');
         formInputs.forEach(input => {
             input.addEventListener('focus', () => {
