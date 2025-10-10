@@ -98,14 +98,30 @@ app.post('/send-email', async (req, res) => {
             })
         });
 
+        const responseText = await response.text();
+        console.log('Mailsend API response status:', response.status);
+        console.log('Mailsend API response body:', responseText);
+        
         if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
+            let errorData = {};
+            try {
+                errorData = JSON.parse(responseText);
+            } catch (e) {
+                console.error('Failed to parse error response as JSON');
+            }
             console.error('Mailsend API error:', errorData);
             throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
-        const result = await response.json();
-
+        let result = {};
+        try {
+            result = JSON.parse(responseText);
+        } catch (e) {
+            console.error('Failed to parse success response as JSON');
+        }
+        
+        console.log('Email sent successfully:', result);
+        
         res.json({
             success: true,
             message: 'Email sent successfully'
