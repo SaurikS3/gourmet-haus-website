@@ -766,9 +766,8 @@ class ContactFormHandler {
         this.setLoading(true);
 
         try {
-            // Call secure backend endpoint (Netlify Function)
-            // The API token is securely stored on the backend, not exposed to the client
-            const response = await fetch('/.netlify/functions/send-email', {
+            // Try Netlify Function first (for Netlify deployments)
+            let response = await fetch('/.netlify/functions/send-email', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -779,29 +778,40 @@ class ContactFormHandler {
                     phone,
                     message
                 })
-            });
+            }).catch(() => null);
+
+            // If Netlify function not available (GitHub Pages), use Formspree fallback
+            if (!response || !response.ok) {
+                response = await fetch('https://formspree.io/f/mjkvdwkq', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        message,
+                        _subject: `New Contact - ${name}`
+                    })
+                });
+            }
 
             if (!response.ok) {
-                const errorData = await response.json().catch(() => ({}));
-                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
-
-            if (result.success) {
-                this.showMessage('Thank you for your message! We will get back to you soon.', 'success');
-                this.form.reset();
-                
-                // Remove any error classes
-                this.form.querySelectorAll('.error').forEach(field => {
-                    field.classList.remove('error');
-                });
-                this.form.querySelectorAll('.field-error').forEach(error => {
-                    error.remove();
-                });
-            } else {
-                throw new Error(result.message || 'Failed to send message');
-            }
+            this.showMessage('Thank you for your message! We will get back to you soon.', 'success');
+            this.form.reset();
+            
+            // Remove any error classes
+            this.form.querySelectorAll('.error').forEach(field => {
+                field.classList.remove('error');
+            });
+            this.form.querySelectorAll('.field-error').forEach(error => {
+                error.remove();
+            });
         } catch (error) {
             console.error('Form submission error:', error);
             this.showMessage(
