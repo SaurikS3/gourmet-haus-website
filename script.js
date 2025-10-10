@@ -766,10 +766,9 @@ class ContactFormHandler {
         this.setLoading(true);
 
         try {
-            // Configuration: Set your proxy URL here after deploying backend-proxy
-            // Deploy backend-proxy to Render.com or Railway.app (see backend-proxy/README.md)
-            // Then replace PROXY_URL_HERE with your deployed URL
-            const PROXY_URL = 'PROXY_URL_HERE'; // e.g., 'https://gourmet-haus-email-proxy.onrender.com'
+            // Configuration: Secure backend proxy deployed on Render.com
+            // API token is stored securely in environment variables
+            const PROXY_URL = 'https://gourmet-haus-email-proxy.onrender.com';
             
             let response = null;
             
