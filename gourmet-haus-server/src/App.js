@@ -6,6 +6,7 @@ import ProfilePage from './components/ProfilePage';
 import ContactPage from './components/ContactPage';
 import AdminSetup from './components/AdminSetup';
 import { onAuthStateChange } from './services/authService';
+import { checkForUpdates, updateStoredVersion, forceReload } from './utils/versionCheck';
 import './styles/index.css';
 
 function App() {
@@ -39,6 +40,36 @@ function App() {
 
     // Cleanup subscription on unmount
     return () => unsubscribe();
+  }, []);
+
+  // Check for version updates every 5 minutes
+  useEffect(() => {
+    const checkVersion = async () => {
+      const update = await checkForUpdates();
+      if (update) {
+        console.log('New version detected:', update);
+        // Show user-friendly notification
+        const shouldUpdate = window.confirm(
+          `A new version of Gourmet Haus is available!\n\n` +
+          `Current: ${update.currentVersion}\n` +
+          `New: ${update.newVersion}\n\n` +
+          `Would you like to refresh to get the latest features?`
+        );
+        
+        if (shouldUpdate) {
+          updateStoredVersion(update.newVersion, update.timestamp);
+          forceReload();
+        }
+      }
+    };
+
+    // Check immediately on mount
+    checkVersion();
+
+    // Then check every 5 minutes
+    const interval = setInterval(checkVersion, 5 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   if (loading) {
