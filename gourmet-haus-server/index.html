@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Haus - Casual dining, extraordinary taste, exquisitely prepared</title>
+    <link rel="icon" type="image/svg+xml" href="Icon Logo transparent gourmet-haus-logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Cormorant+Garamond:wght@300;400;600;700&family=Cinzel:wght@400;600;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Clarity Analytics -->
+    <script type="text/javascript">
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "tnuaj6b2r8");
+    </script>
+</head>
+<body>
+    <!-- Luxurious Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-content">
+            <div class="logo-container">
+                <img src="Icon Logo transparent gourmet-haus-logo.svg" alt="Gourmet Haus Logo" class="loading-logo">
+            </div>
+            <div class="loading-ornament">
+                <span class="ornament-dot"></span>
+                <span class="ornament-line"></span>
+                <span class="ornament-diamond">◆</span>
+                <span class="ornament-line"></span>
+                <span class="ornament-dot"></span>
+            </div>
+            <p class="loading-text">
+                <span class="loading-letter">P</span>
+                <span class="loading-letter">R</span>
+                <span class="loading-letter">E</span>
+                <span class="loading-letter">P</span>
+                <span class="loading-letter">A</span>
+                <span class="loading-letter">R</span>
+                <span class="loading-letter">I</span>
+                <span class="loading-letter">N</span>
+                <span class="loading-letter">G</span>
+                <span class="loading-space"></span>
+                <span class="loading-letter">Y</span>
+                <span class="loading-letter">O</span>
+                <span class="loading-letter">U</span>
+                <span class="loading-letter">R</span>
+                <span class="loading-space"></span>
+                <span class="loading-letter">E</span>
+                <span class="loading-letter">X</span>
+                <span class="loading-letter">P</span>
+                <span class="loading-letter">E</span>
+                <span class="loading-letter">R</span>
+                <span class="loading-letter">I</span>
+                <span class="loading-letter">E</span>
+                <span class="loading-letter">N</span>
+                <span class="loading-letter">C</span>
+                <span class="loading-letter">E</span>
+            </p>
+            <div class="loading-progress">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Luxury Particle System Background -->
+    <canvas id="particles-canvas"></canvas>
+    
+    <!-- Animated Gradient Orbs -->
+    <div class="gradient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    
+    <!-- Luxury Navigation -->
+    <nav class="luxury-nav">
+        <div class="nav-logo-container">
+            <img src="Icon Logo transparent gourmet-haus-logo.svg" alt="Gourmet Haus" class="nav-logo-svg">
+        </div>
+        <button class="mobile-menu-toggle" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="nav-links">
+            <a href="#burgers" class="nav-link">BURGERS</a>
+            <a href="#wraps" class="nav-link">WRAPS</a>
+            <a href="#rice" class="nav-link">RICE</a>
+            <a href="#fries" class="nav-link">FRIES</a>
+            <a href="#desserts" class="nav-link">DESSERTS</a>
+        </div>
+    </nav>
+    <div class="menu-container">
+        <header class="hero-section">
+            <div class="hero-parallax-layers">
+                <div class="parallax-layer layer-back"></div>
+                <div class="parallax-layer layer-mid"></div>
+                <div class="parallax-layer layer-front"></div>
+            </div>
+            
+            <div class="brand-identity">
+                <div class="brand-ornament top"></div>
+                <h1 class="brand-name">
+                    <span class="brand-word">
+                        <span class="letter">G</span>
+                        <span class="letter">O</span>
+                        <span class="letter">U</span>
+                        <span class="letter">R</span>
+                        <span class="letter">M</span>
+                        <span class="letter">E</span>
+                        <span class="letter">T</span>
+                    </span>
+                    <span class="brand-word">
+                        <span class="letter">H</span>
+                        <span class="letter">A</span>
+                        <span class="letter">U</span>
+                        <span class="letter">S</span>
+                    </span>
+                </h1>
+                <div class="brand-divider">
+                    <span class="divider-ornament"></span>
+                    <span class="divider-diamond">◆</span>
+                    <span class="divider-ornament"></span>
+                </div>
+                <p class="brand-tagline">
+                    <span class="tagline-word">CASUAL</span>
+                    <span class="tagline-word">DINING</span>
+                    <span class="tagline-word">EXTRAORDINARY</span>
+                    <span class="tagline-word">TASTE</span>
+                </p>
+                <div class="brand-ornament bottom"></div>
+                <div class="scroll-indicator">
+                    <span class="scroll-text">EXPLORE</span>
+                    <span class="scroll-arrow">↓</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="menu-content">
+            <!-- Burgers Section -->
+            <section class="menu-section" id="burgers" data-section="burgers">
+                <div class="section-header">
+                    <div class="section-number">01</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">BURGERS</span>
+                        <span class="title-subtitle">Handcrafted Perfection</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items">
+                    <article class="menu-item" data-luxury="premium">
+                        <div class="item-luxury-badge">SIGNATURE</div>
+                        <div class="item-number">01</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Lamb Royale</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Discover Lamb Royale: a bold fusion of soft spiced lamb minced and crunchy onion bhaji, layered with crisp greens and a cool drizzle of mint yoghurt, mango, and tangy tamarind all tucked into a pillowy brioche bun. A rich, flavor-packed creation that's equal parts comfort and adventure — every bite a little royal, a little street.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="exclusive">
+                        <div class="item-luxury-badge">CHEF'S CHOICE</div>
+                        <div class="item-number">02</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Grilled Haus Burger</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Indulge juicy grilled chicken thighs meeting melted cheese and crisp, fresh salad in a buttery brioche bun. Finished with our signature Haus sauce, every serving delivers a perfect balance of smoky, savory, and fresh flavors that'll keep you coming back for more.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="select">
+                        <div class="item-luxury-badge">GARDEN</div>
+                        <div class="item-number">03</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Leaf & Cheese</span>
+                                <span class="name-ornament">◇</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Crunch into Golden, crispy paneer meets fresh, vibrant spinach in a buttery brioche bun, layered with melted cheese for gooey goodness. A touch of tangy sauce and perfectly balanced seasoning bring each mouthful to life—this burger is a playful dance of crunchy, creamy, and fresh flavors that leaves a lasting impression.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="artisan">
+                        <div class="item-luxury-badge">ARTISAN</div>
+                        <div class="item-number">04</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Haus Bites</span>
+                                <span class="name-ornament">●</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Grab hand-coated nuggets fried to a crisp golden hue, kissed with a tangy tamarind-mango glaze, and served piping hot. Each nugget delivers a fun mix of tart, sweet, and savory flavors, perfectly balanced for an irresistible snack or shareable treat.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Wraps Section -->
+            <section class="menu-section" id="wraps" data-section="wraps">
+                <div class="section-header">
+                    <div class="section-number">02</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">WRAPS</span>
+                        <span class="title-subtitle">Artful Compositions</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items">
+                    <article class="menu-item" data-luxury="premium">
+                        <div class="item-luxury-badge">SIGNATURE</div>
+                        <div class="item-number">05</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">The Haus Wrap</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Unwrap a flavor roll-up that means business. Juicy grilled chicken joins crisp greens, all tucked in warm, soft flatbread and finished with our signature Haus sauce. Each wrap bursts with smoky, zesty, and fresh goodness—simple, satisfying, and seriously tasty.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="select">
+                        <div class="item-luxury-badge">GARDEN</div>
+                        <div class="item-number">06</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Leaf & Cheese</span>
+                                <span class="name-ornament">◇</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Dive into fresh vibes and bold flavors. Golden, crispy paneer and vibrant spinach come together in a soft flatbread, dressed with tangy sauce for that perfect kick. It's a crispy-creamy wrap with attitude—light, lively, and seriously addictive.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="artisan">
+                        <div class="item-luxury-badge">FUSION</div>
+                        <div class="item-number">07</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Haus Bites</span>
+                                <span class="name-ornament">●</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Sink into a wrap that brings the crunch. Our golden, hand-coated Haus Bites meet crisp greens and a lacing of tangy tamarind-mango sauce, all rolled in soft flatbread. Every wrap hits that sweet, spicy, and savory groove—bold, messy, and downright craveable.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Rice Dishes Section -->
+            <section class="menu-section" id="rice" data-section="rice">
+                <div class="section-header">
+                    <div class="section-number">03</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">RICE DISHES</span>
+                        <span class="title-subtitle">Aromatic Treasures</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items">
+                    <article class="menu-item" data-luxury="royal">
+                        <div class="item-luxury-badge">ROYAL HERITAGE</div>
+                        <div class="item-number">08</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Qabli Palaw</span>
+                                <span class="name-ornament">♛</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Journey into the heart of Afghan flavor. Fluffy, long-grain rice layered with succulent lamb, caramelized carrots, and plump raisins—each grain infused with delicate spices and slow-cooked richness. It's a soulful classic where sweet meets savory in perfect harmony, comfort served the Afghan way.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="exclusive">
+                        <div class="item-luxury-badge">CHEF'S SPECIAL</div>
+                        <div class="item-number">09</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Gourmet Chicken</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Experience tender, juicy chicken layered over aromatic, perfectly cooked rice, infused with a symphony of spices and fresh herbs. Every mouthful delivers a savory, tangy, and satisfying journey—comforting yet vibrant, familiar yet unforgettable.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Loaded Fries Section -->
+            <section class="menu-section" id="fries" data-section="fries">
+                <div class="section-header">
+                    <div class="section-number">04</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">LOADED FRIES</span>
+                        <span class="title-subtitle">Indulgent Creations</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items">
+                    <article class="menu-item" data-luxury="premium">
+                        <div class="item-luxury-badge">INDULGENCE</div>
+                        <div class="item-number">10</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Grilled Chicken</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Stacked with golden, crispy fries and smoky, juicy grilled chicken, finished with a punchy splash of zesty sauce. Every forkful bursts with bold, savory, and lively flavors—hearty, satisfying, and impossible to resist.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="artisan">
+                        <div class="item-luxury-badge">SYMPHONY</div>
+                        <div class="item-number">11</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Haus Bites</span>
+                                <span class="name-ornament">●</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Craving something epic? Dive into golden, crispy fries piled high with smoky, crispy Haus Bites, tossed with crisp greens and finished with a zesty tamarind-mango kick. Every forkful hits sweet, spicy, and savory notes in perfect harmony—messy, bold, and guaranteed to satisfy even the fiercest hunger.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="royal">
+                        <div class="item-luxury-badge">MAJESTY</div>
+                        <div class="item-number">12</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Lamb</span>
+                                <span class="name-ornament">♛</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Go all in on golden fries piled with spiced minced lamb and crisp greens, topped with a silky yogurt ribbon and our zesty green secret sauce. Every forkful bursts with bold, tangy, and herb-forward flavors—hearty, playful, and impossible to put down.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Sides Section -->
+            <section class="menu-section sides-section" data-section="sides">
+                <div class="section-header">
+                    <div class="section-number">—</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">SIDES</span>
+                        <span class="title-subtitle">Perfect Pairings</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items sides-grid">
+                    <article class="menu-item menu-item-compact" data-luxury="select">
+                        <div class="item-number">—</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Gourmet Spiced Fries</span>
+                                <span class="name-ornament">◆</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Turn up the flavor with golden fries tossed in a bold blend of aromatic spices. Crispy on the outside, tender on the inside, each fry delivers a punch of savory heat and irresistible seasoning—perfect as a snack, a side, or a craving crusher.
+                        </p>
+                    </article>
+
+                    <article class="menu-item menu-item-compact" data-luxury="classic">
+                        <div class="item-number">—</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Regular Fries</span>
+                                <span class="name-ornament">○</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Classic golden fries, crispy on the outside and fluffy within—simple, timeless perfection.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Desserts Section -->
+            <section class="menu-section" id="desserts" data-section="desserts">
+                <div class="section-header">
+                    <div class="section-number">05</div>
+                    <div class="section-ornamental-line"></div>
+                    <h2 class="section-title">
+                        <span class="title-main">DESSERTS</span>
+                        <span class="title-subtitle">Divine Finales</span>
+                    </h2>
+                    <div class="section-ornamental-line"></div>
+                </div>
+                
+                <div class="menu-items">
+                    <article class="menu-item" data-luxury="exclusive">
+                        <div class="item-luxury-badge">SIGNATURE</div>
+                        <div class="item-number">13</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Rice Pudding</span>
+                                <span class="name-ornament">◇</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Spoon into velvety rice cooked in sweet, fragrant milk and lightly scented with cardamom. Topped with a sprinkle of pistachios, it's a creamy, comforting treat that's indulgent and utterly irresistible.
+                        </p>
+                    </article>
+
+                    <article class="menu-item" data-luxury="royal">
+                        <div class="item-luxury-badge">HERITAGE</div>
+                        <div class="item-number">14</div>
+                        <div class="item-header">
+                            <h3 class="item-name">
+                                <span class="name-main">Baklava</span>
+                                <span class="name-ornament">♛</span>
+                            </h3>
+                        </div>
+                        <p class="item-description">
+                            Bite into layers of crisp, golden pastry filled with a sweet, nutty mix of pistachios and almonds, all drizzled with honey. Each piece delivers a perfect balance of crunch and sweetness—rich, fragrant, and a traditional Afghan delight.
+                        </p>
+                    </article>
+                </div>
+            </section>
+        </main>
+
+        <footer class="menu-footer">
+            <div class="footer-ornament-top"></div>
+            <div class="brand-signature">
+                <p class="signature-text">CRAFTED WITH PASSION</p>
+                <p class="signature-location">EST. 2025 • GOURMET HAUS</p>
+            </div>
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h4>LOCATION</h4>
+                    <p>TBD</p>
+                </div>
+                <div class="footer-section">
+                    <h4>HOURS</h4>
+                    <p>TBD</p>
+                </div>
+                <div class="footer-section">
+                    <h4>CONTACT</h4>
+                    <p>(703) 867-5112</p>
+                </div>
+            </div>
+        </footer>
+        
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button id="scroll-to-top" class="scroll-to-top" aria-label="Scroll to top">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>

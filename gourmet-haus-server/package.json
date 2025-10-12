@@ -1,0 +1,52 @@
+{
+  "name": "gourmet-haus-server",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "cypress": "cypress open",
+    "cypress:run": "cypress run",
+    "test:e2e": "cypress run --spec 'cypress/e2e/**/*.cy.js'",
+    "test:navigation": "cypress run --spec 'cypress/e2e/navigation.cy.js'",
+    "test:responsive": "cypress run --spec 'cypress/e2e/responsive.cy.js'",
+    "test:responsive:auth": "cypress open --e2e",
+    "test:responsive:auth:run": "cypress run --spec 'cypress/e2e/responsive-authenticated.cy.js'",
+    "test:authenticated": "cypress open --e2e",
+    "test:authenticated:run": "cypress run --spec 'cypress/e2e/authenticated-user.cy.js'",
+    "test:manual:login": "cypress open --e2e --config specPattern='cypress/e2e/responsive-manual-login.cy.js'",
+    "test:all": "npm test && npm run test:e2e"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "firebase": "^12.4.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-router-dom": "^7.9.4",
+    "react-scripts": "^5.0.1"
+  },
+  "devDependencies": {
+    "cypress": "^15.4.0"
+  }
+}

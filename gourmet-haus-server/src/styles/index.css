@@ -1,0 +1,25 @@
+/* ============================================
+   GOURMET HAUS - MAIN STYLESHEET
+   Modular CSS Architecture
+   ============================================ */
+
+/* Import Base Styles */
+@import './base.css';
+
+/* Import Component Styles */
+@import './navigation.css';
+@import './home.css';
+@import './login.css';
+@import './profile.css';
+@import './contact.css';
+
+/* ============================================
+   This modular architecture keeps each file
+   focused and maintainable (under 1000 lines)
+   
+   - base.css: Variables, reset, global styles (~200 lines)
+   - navigation.css: Navigation bar and menu (~190 lines)
+   - home.css: Hero, menu sections, footer (~650 lines)
+   - login.css: Login/authentication pages (~260 lines)
+   - profile.css: User profile dashboard (~550 lines)
+   ============================================ */
