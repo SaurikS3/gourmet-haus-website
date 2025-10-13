@@ -82,21 +82,42 @@ export const updateStoredVersion = (version, timestamp) => {
   localStorage.setItem('app_timestamp', timestamp.toString());
 };
 
-export const forceReload = () => {
-  // Clear all caches and reload
+export const forceReload = async () => {
+  // ULTRA AGGRESSIVE CACHE CLEARING
+  
+  // 1. Clear ALL browser caches
   if ('caches' in window) {
-    caches.keys().then(names => {
-      names.forEach(name => caches.delete(name));
-    });
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map(name => caches.delete(name)));
   }
   
-  // Clear service worker cache if exists
+  // 2. Clear service worker cache if exists
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.getRegistrations().then(registrations => {
-      registrations.forEach(registration => registration.unregister());
-    });
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map(registration => registration.unregister()));
   }
   
-  // Hard reload with cache clear
-  window.location.reload(true);
+  // 3. Clear localStorage (except auth tokens)
+  const authToken = localStorage.getItem('authToken');
+  const userId = localStorage.getItem('userId');
+  localStorage.clear();
+  if (authToken) localStorage.setItem('authToken', authToken);
+  if (userId) localStorage.setItem('userId', userId);
+  
+  // 4. Clear sessionStorage
+  sessionStorage.clear();
+  
+  // 5. Force hard reload with cache bypass
+  // Use multiple methods to ensure cache is bypassed
+  const currentUrl = window.location.href;
+  const separator = currentUrl.includes('?') ? '&' : '?';
+  const nocacheUrl = `${currentUrl}${separator}_nocache=${Date.now()}`;
+  
+  // Method 1: Replace with cache-busted URL
+  window.location.replace(nocacheUrl);
+  
+  // Method 2: Fallback hard reload (in case replace doesn't work)
+  setTimeout(() => {
+    window.location.reload(true);
+  }, 100);
 };
