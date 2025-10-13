@@ -182,6 +182,50 @@
   padding: 24px;
 }
 
+/* Mobile-specific modal adjustments */
+@media (max-width: 599px) {
+  .menu-form {
+    max-width: 100%;
+    margin: 0;
+    border-radius: 0;
+    max-height: 100vh;
+  }
+
+  .menu-form form {
+    padding: 16px;
+  }
+
+  .menu-form-header {
+    padding: 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-cancel,
+  .btn-save,
+  .btn-delete {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .checkbox-group input[type="checkbox"] {
+    width: 44px;
+    height: 22px;
+  }
+
+  .checkbox-group input[type="checkbox"]::before {
+    width: 18px;
+    height: 18px;
+  }
+
+  .checkbox-group input[type="checkbox"]:checked::before {
+    left: 24px;
+  }
+}
+
 .form-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -237,9 +281,9 @@
 }
 
 .checkbox-group label {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   cursor: pointer;
   font-weight: 500;
   color: #FFFFFF;
@@ -248,14 +292,42 @@
 }
 
 .checkbox-group input[type="checkbox"] {
+  width: 48px;
+  height: 24px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.checkbox-group input[type="checkbox"]::before {
+  content: '';
+  position: absolute;
   width: 20px;
   height: 20px;
-  cursor: pointer;
-  accent-color: #D4AF37;
+  border-radius: 50%;
+  background: white;
+  top: 2px;
+  left: 2px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.checkbox-group input[type="checkbox"]:checked {
+  background: linear-gradient(135deg, #4caf50 0%, #66bb6a 100%);
+}
+
+.checkbox-group input[type="checkbox"]:checked::before {
+  left: 26px;
 }
 
 .form-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
   justify-content: flex-end;
   margin-top: 24px;
@@ -274,6 +346,8 @@
   border: none;
   font-size: 0.9rem;
   letter-spacing: 0.3px;
+  min-height: 48px;
+  white-space: nowrap;
 }
 
 .btn-cancel {
