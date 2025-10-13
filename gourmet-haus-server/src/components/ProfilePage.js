@@ -16,10 +16,9 @@ function ProfilePage({ user }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [migrationStatus, setMigrationStatus] = useState({ loading: false, message: '', hasData: false });
   const [profileData, setProfileData] = useState({
+    fullName: '',
     phone: '',
-    address: '',
-    city: '',
-    zipCode: '',
+    deliveryAddress: '',
     dietaryPreferences: [],
     favoriteItems: [],
     orderHistory: []
@@ -47,14 +46,19 @@ function ProfilePage({ user }) {
         if (userDoc.exists()) {
           const data = userDoc.data();
           setProfileData({
+            fullName: data.fullName || user?.displayName || '',
             phone: data.phone || '',
-            address: data.address || '',
-            city: data.city || '',
-            zipCode: data.zipCode || '',
+            deliveryAddress: data.deliveryAddress || '',
             dietaryPreferences: data.dietaryPreferences || [],
             favoriteItems: data.favoriteItems || [],
             orderHistory: data.orderHistory || []
           });
+        } else {
+          // Initialize with user display name if available
+          setProfileData(prev => ({
+            ...prev,
+            fullName: user?.displayName || ''
+          }));
         }
       } catch (error) {
         console.error('Error loading profile:', error);
@@ -106,13 +110,14 @@ function ProfilePage({ user }) {
     try {
       if (!db) return;
       await updateDoc(doc(db, 'users', user.uid), {
+        fullName: profileData.fullName,
         phone: profileData.phone,
-        address: profileData.address,
-        city: profileData.city,
-        zipCode: profileData.zipCode,
-        dietaryPreferences: profileData.dietaryPreferences
+        deliveryAddress: profileData.deliveryAddress,
+        dietaryPreferences: profileData.dietaryPreferences,
+        updatedAt: new Date().toISOString()
       });
       setIsEditing(false);
+      alert('Profile updated successfully!');
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -419,13 +424,15 @@ function ProfilePage({ user }) {
                     }}>Full Name</label>
                     <input
                       type="text"
-                      value={user?.displayName || ''}
-                      disabled
+                      value={profileData.fullName}
+                      onChange={(e) => setProfileData({...profileData, fullName: e.target.value})}
+                      disabled={!isEditing}
+                      placeholder="Enter full name"
                       style={{
                         width: '100%',
                         padding: '12px 14px',
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                         borderRadius: '8px',
                         color: '#FFFFFF',
                         fontSize: '0.95rem',
@@ -444,37 +451,21 @@ function ProfilePage({ user }) {
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px'
                     }}>Email</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <input
-                        type="email"
-                        value={user?.email || ''}
-                        disabled
-                        style={{
-                          flex: 1,
-                          padding: '12px 14px',
-                          background: 'rgba(255, 255, 255, 0.03)',
-                          border: '1px solid rgba(255, 255, 255, 0.08)',
-                          borderRadius: '8px',
-                          color: '#FFFFFF',
-                          fontSize: '0.95rem',
-                          outline: 'none'
-                        }}
-                      />
-                      <button
-                        style={{
-                          background: 'transparent',
-                          border: '1px solid rgba(255, 255, 255, 0.15)',
-                          borderRadius: '8px',
-                          color: 'rgba(255, 255, 255, 0.6)',
-                          padding: '12px 18px',
-                          fontSize: '0.85rem',
-                          fontWeight: '500',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Update
-                      </button>
-                    </div>
+                    <input
+                      type="email"
+                      value={user?.email || ''}
+                      disabled
+                      style={{
+                        width: '100%',
+                        padding: '12px 14px',
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        borderRadius: '8px',
+                        color: '#FFFFFF',
+                        fontSize: '0.95rem',
+                        outline: 'none'
+                      }}
+                    />
                   </div>
 
                   <div>
@@ -515,34 +506,24 @@ function ProfilePage({ user }) {
                       color: 'rgba(255, 255, 255, 0.5)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px'
-                    }}>Subscription</label>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{
-                        flex: 1,
+                    }}>Delivery Address</label>
+                    <input
+                      type="text"
+                      value={profileData.deliveryAddress}
+                      onChange={(e) => setProfileData({...profileData, deliveryAddress: e.target.value})}
+                      disabled={!isEditing}
+                      placeholder="Enter delivery address"
+                      style={{
+                        width: '100%',
                         padding: '12px 14px',
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
                         borderRadius: '8px',
                         color: '#FFFFFF',
-                        fontSize: '0.95rem'
-                      }}>
-                        Free Plan
-                      </div>
-                      <button
-                        style={{
-                          background: 'linear-gradient(135deg, #D4AF37 0%, #F4E4B3 100%)',
-                          border: 'none',
-                          borderRadius: '8px',
-                          color: '#000',
-                          padding: '12px 18px',
-                          fontSize: '0.85rem',
-                          fontWeight: '700',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Manage
-                      </button>
-                    </div>
+                        fontSize: '0.95rem',
+                        outline: 'none'
+                      }}
+                    />
                   </div>
 
                   <div>
