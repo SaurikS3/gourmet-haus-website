@@ -6,12 +6,16 @@ import ProfilePage from './components/ProfilePage';
 import ContactPage from './components/ContactPage';
 import AdminSetup from './components/AdminSetup';
 import { onAuthStateChange } from './services/authService';
+import { getAuth } from 'firebase/auth';
 import { checkForUpdates, updateStoredVersion, forceReload, forceVersionCheck } from './utils/versionCheck';
 import './styles/index.css';
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const auth = getAuth();
+  // Check if user is ALREADY logged in SYNCHRONOUSLY
+  const initialUser = auth.currentUser;
+  const [user, setUser] = useState(initialUser);
+  const [loading, setLoading] = useState(!initialUser); // Skip loading if already logged in
 
   useEffect(() => {
     const startTime = Date.now();
