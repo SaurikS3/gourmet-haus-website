@@ -212,17 +212,20 @@
   }
 
   .checkbox-group input[type="checkbox"] {
-    width: 44px;
-    height: 22px;
+    width: 52px;
+    height: 28px;
+    min-width: 52px;
   }
 
   .checkbox-group input[type="checkbox"]::before {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
+    top: 3px;
+    left: 3px;
   }
 
   .checkbox-group input[type="checkbox"]:checked::before {
-    left: 24px;
+    left: 27px;
   }
 }
 
@@ -292,27 +295,28 @@
 }
 
 .checkbox-group input[type="checkbox"] {
-  width: 48px;
-  height: 24px;
+  width: 52px;
+  height: 28px;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
+  border-radius: 14px;
   position: relative;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  min-width: 52px;
 }
 
 .checkbox-group input[type="checkbox"]::before {
   content: '';
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: white;
-  top: 2px;
-  left: 2px;
+  top: 3px;
+  left: 3px;
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -322,7 +326,7 @@
 }
 
 .checkbox-group input[type="checkbox"]:checked::before {
-  left: 26px;
+  left: 27px;
 }
 
 .form-actions {
@@ -348,6 +352,9 @@
   letter-spacing: 0.3px;
   min-height: 48px;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-cancel {
@@ -371,6 +378,19 @@
 .btn-save:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+/* DELETE button in modal form */
+.form-actions .btn-delete {
+  background: linear-gradient(135deg, #f44336 0%, #e57373 100%);
+  color: white;
+  border: none;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.25);
+}
+
+.form-actions .btn-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
 
 /* ===================================
