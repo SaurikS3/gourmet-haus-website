@@ -16,6 +16,31 @@ function App() {
   const [authChecked, setAuthChecked] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // NUCLEAR OPTION: Clear ALL caches on every app mount
+  useEffect(() => {
+    const nukeCaches = async () => {
+      try {
+        // Clear all Cache API caches
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(name => caches.delete(name)));
+          console.log('🧹 Cleared all Cache API caches');
+        }
+        
+        // Unregister all service workers
+        if ('serviceWorker' in navigator) {
+          const registrations = await navigator.serviceWorker.getRegistrations();
+          await Promise.all(registrations.map(reg => reg.unregister()));
+          console.log('🧹 Unregistered all service workers');
+        }
+      } catch (error) {
+        console.error('Cache clearing failed:', error);
+      }
+    };
+    
+    nukeCaches();
+  }, []);
+
   useEffect(() => {
     const startTime = Date.now();
     const minimumLoadTime = 3000; // 3 seconds minimum display time
