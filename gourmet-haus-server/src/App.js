@@ -12,10 +12,9 @@ import './styles/index.css';
 
 function App() {
   const auth = getAuth();
-  // Check if user is ALREADY logged in SYNCHRONOUSLY
-  const initialUser = auth.currentUser;
-  const [user, setUser] = useState(initialUser);
-  const [loading, setLoading] = useState(!initialUser); // Skip loading if already logged in
+  const [user, setUser] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const startTime = Date.now();
@@ -24,6 +23,7 @@ function App() {
     // Listen for auth state changes
     const unsubscribe = onAuthStateChange((currentUser) => {
       setUser(currentUser);
+      setAuthChecked(true);
       
       // If user is logged in, skip loading screen immediately
       if (currentUser) {
