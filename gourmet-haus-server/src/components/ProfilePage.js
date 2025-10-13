@@ -18,7 +18,13 @@ function ProfilePage({ user }) {
   const [profileData, setProfileData] = useState({
     fullName: '',
     phone: '',
-    deliveryAddress: '',
+    address: {
+      street: '',
+      apt: '',
+      city: '',
+      state: '',
+      zipCode: ''
+    },
     dietaryPreferences: [],
     favoriteItems: [],
     orderHistory: []
@@ -48,7 +54,13 @@ function ProfilePage({ user }) {
           setProfileData({
             fullName: data.fullName || user?.displayName || '',
             phone: data.phone || '',
-            deliveryAddress: data.deliveryAddress || '',
+            address: {
+              street: data.address?.street || '',
+              apt: data.address?.apt || '',
+              city: data.address?.city || '',
+              state: data.address?.state || '',
+              zipCode: data.address?.zipCode || ''
+            },
             dietaryPreferences: data.dietaryPreferences || [],
             favoriteItems: data.favoriteItems || [],
             orderHistory: data.orderHistory || []
@@ -112,7 +124,13 @@ function ProfilePage({ user }) {
       await updateDoc(doc(db, 'users', user.uid), {
         fullName: profileData.fullName,
         phone: profileData.phone,
-        deliveryAddress: profileData.deliveryAddress,
+        address: {
+          street: profileData.address.street,
+          apt: profileData.address.apt,
+          city: profileData.address.city,
+          state: profileData.address.state,
+          zipCode: profileData.address.zipCode
+        },
         dietaryPreferences: profileData.dietaryPreferences,
         updatedAt: new Date().toISOString()
       });
@@ -500,19 +518,24 @@ function ProfilePage({ user }) {
                   <div>
                     <label style={{
                       display: 'block',
-                      marginBottom: '8px',
+                      marginBottom: '12px',
                       fontSize: '0.8rem',
                       fontWeight: '600',
                       color: 'rgba(255, 255, 255, 0.5)',
                       textTransform: 'uppercase',
                       letterSpacing: '0.5px'
                     }}>Delivery Address</label>
+                    
+                    {/* Street Address */}
                     <input
                       type="text"
-                      value={profileData.deliveryAddress}
-                      onChange={(e) => setProfileData({...profileData, deliveryAddress: e.target.value})}
+                      value={profileData.address.street}
+                      onChange={(e) => setProfileData({
+                        ...profileData,
+                        address: { ...profileData.address, street: e.target.value }
+                      })}
                       disabled={!isEditing}
-                      placeholder="Enter delivery address"
+                      placeholder="Street Address"
                       style={{
                         width: '100%',
                         padding: '12px 14px',
@@ -521,9 +544,97 @@ function ProfilePage({ user }) {
                         borderRadius: '8px',
                         color: '#FFFFFF',
                         fontSize: '0.95rem',
-                        outline: 'none'
+                        outline: 'none',
+                        marginBottom: '12px'
                       }}
                     />
+                    
+                    {/* Apt/Unit */}
+                    <input
+                      type="text"
+                      value={profileData.address.apt}
+                      onChange={(e) => setProfileData({
+                        ...profileData,
+                        address: { ...profileData.address, apt: e.target.value }
+                      })}
+                      disabled={!isEditing}
+                      placeholder="Apt, Suite, Unit (Optional)"
+                      style={{
+                        width: '100%',
+                        padding: '12px 14px',
+                        background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                        border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                        borderRadius: '8px',
+                        color: '#FFFFFF',
+                        fontSize: '0.95rem',
+                        outline: 'none',
+                        marginBottom: '12px'
+                      }}
+                    />
+                    
+                    {/* City, State, Zip Row */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '12px' }}>
+                      <input
+                        type="text"
+                        value={profileData.address.city}
+                        onChange={(e) => setProfileData({
+                          ...profileData,
+                          address: { ...profileData.address, city: e.target.value }
+                        })}
+                        disabled={!isEditing}
+                        placeholder="City"
+                        style={{
+                          width: '100%',
+                          padding: '12px 14px',
+                          background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                          border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                          borderRadius: '8px',
+                          color: '#FFFFFF',
+                          fontSize: '0.95rem',
+                          outline: 'none'
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={profileData.address.state}
+                        onChange={(e) => setProfileData({
+                          ...profileData,
+                          address: { ...profileData.address, state: e.target.value }
+                        })}
+                        disabled={!isEditing}
+                        placeholder="State"
+                        style={{
+                          width: '100%',
+                          padding: '12px 14px',
+                          background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                          border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                          borderRadius: '8px',
+                          color: '#FFFFFF',
+                          fontSize: '0.95rem',
+                          outline: 'none'
+                        }}
+                      />
+                      <input
+                        type="text"
+                        value={profileData.address.zipCode}
+                        onChange={(e) => setProfileData({
+                          ...profileData,
+                          address: { ...profileData.address, zipCode: e.target.value }
+                        })}
+                        disabled={!isEditing}
+                        placeholder="ZIP"
+                        style={{
+                          width: '100%',
+                          padding: '12px 14px',
+                          background: isEditing ? 'rgba(212, 175, 55, 0.05)' : 'rgba(255, 255, 255, 0.03)',
+                          border: `1px solid ${isEditing ? 'rgba(212, 175, 55, 0.3)' : 'rgba(255, 255, 255, 0.08)'}`,
+                          borderRadius: '8px',
+                          color: '#FFFFFF',
+                          fontSize: '0.95rem',
+                          outline: 'none'
+                        }}
+                      />
+                    </div>
                   </div>
 
                   <div>
