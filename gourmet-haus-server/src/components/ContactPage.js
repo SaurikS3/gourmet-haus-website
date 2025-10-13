@@ -236,19 +236,19 @@ function ContactPage() {
             <div className="info-card">
               <div className="info-icon">📍</div>
               <h3 className="info-title">Visit Us</h3>
-              <p className="info-text">123 Culinary Avenue<br />Food District, FC 12345</p>
+              <p className="info-text">TBD</p>
             </div>
 
             <div className="info-card">
               <div className="info-icon">📞</div>
               <h3 className="info-title">Call Us</h3>
-              <p className="info-text">(703) 867-5112<br />Mon-Fri: 9AM - 6PM</p>
+              <p className="info-text">(703) 867-5112</p>
             </div>
 
             <div className="info-card">
               <div className="info-icon">🕐</div>
               <h3 className="info-title">Hours</h3>
-              <p className="info-text">Monday - Sunday<br />11:00 AM - 10:00 PM</p>
+              <p className="info-text">TBD</p>
             </div>
           </div>
         </div>
