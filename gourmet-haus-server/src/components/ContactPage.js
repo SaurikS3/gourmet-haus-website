@@ -242,7 +242,7 @@ function ContactPage() {
             <div className="info-card">
               <div className="info-icon">📞</div>
               <h3 className="info-title">Call Us</h3>
-              <p className="info-text">+1 (555) 123-4567<br />Mon-Fri: 9AM - 6PM</p>
+              <p className="info-text">(703) 867-5112<br />Mon-Fri: 9AM - 6PM</p>
             </div>
 
             <div className="info-card">
