@@ -470,6 +470,12 @@
   font-size: 0.9rem;
   line-height: 1.6;
   max-width: 100%;
+  /* Truncate to 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Meta Tags Row */
@@ -602,15 +608,18 @@
 
 .btn-edit,
 .btn-delete {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.2s ease;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   letter-spacing: 0.3px;
   text-transform: uppercase;
+  flex: 1;
+  min-width: auto;
+  width: auto;
 }
 
 .btn-edit {

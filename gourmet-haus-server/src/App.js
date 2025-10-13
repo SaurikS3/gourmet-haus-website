@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     const startTime = Date.now();
-    const minimumLoadTime = 4000; // 4 seconds minimum display time
+    const minimumLoadTime = 3000; // 3 seconds minimum display time
 
     // Listen for auth state changes
     const unsubscribe = onAuthStateChange((currentUser) => {
@@ -535,7 +535,7 @@ function App() {
             height: 100%;
             background: linear-gradient(90deg, #d4af37, #f4e4c1, #d4af37);
             width: 0%;
-            animation: progressFill 4s ease-out forwards;
+            animation: progressFill 3s ease-out forwards;
           }
 
           @keyframes progressFill {
