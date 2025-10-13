@@ -71,21 +71,19 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  // AGGRESSIVE: Check version on EVERY page load and auto-reload if outdated
+  // Check version on page load but don't auto-reload (prevents blank page issues)
   useEffect(() => {
-    const aggressiveVersionCheck = async () => {
+    const checkVersionOnLoad = async () => {
       const needsReload = await forceVersionCheck();
       if (needsReload) {
-        console.log('🔄 New version detected - auto-reloading...');
-        // Silent reload without prompt for better UX
-        setTimeout(() => {
-          forceReload();
-        }, 500);
+        console.log('🔄 New version detected');
+        // Just update the version in storage, don't force reload
+        // Let the periodic check below handle user notification
       }
     };
 
-    // Run immediately on mount (every page load/refresh)
-    aggressiveVersionCheck();
+    // Run on mount but don't force reload
+    checkVersionOnLoad();
   }, []);
 
   // PERIODIC: Check for version updates every 5 minutes while user is active

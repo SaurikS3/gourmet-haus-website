@@ -83,41 +83,38 @@ export const updateStoredVersion = (version, timestamp) => {
 };
 
 export const forceReload = async () => {
-  // ULTRA AGGRESSIVE CACHE CLEARING
+  // Gentle cache clearing that preserves routing
   
-  // 1. Clear ALL browser caches
+  // 1. Clear browser caches
   if ('caches' in window) {
-    const cacheNames = await caches.keys();
-    await Promise.all(cacheNames.map(name => caches.delete(name)));
+    try {
+      const cacheNames = await caches.keys();
+      await Promise.all(cacheNames.map(name => caches.delete(name)));
+    } catch (error) {
+      console.error('Cache clearing failed:', error);
+    }
   }
   
   // 2. Clear service worker cache if exists
   if ('serviceWorker' in navigator) {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(registrations.map(registration => registration.unregister()));
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(registrations.map(registration => registration.unregister()));
+    } catch (error) {
+      console.error('Service worker clearing failed:', error);
+    }
   }
   
-  // 3. Clear localStorage (except auth tokens)
+  // 3. Preserve auth state but clear version info
   const authToken = localStorage.getItem('authToken');
   const userId = localStorage.getItem('userId');
-  localStorage.clear();
-  if (authToken) localStorage.setItem('authToken', authToken);
-  if (userId) localStorage.setItem('userId', userId);
+  const appVersion = localStorage.getItem('app_version');
+  const appTimestamp = localStorage.getItem('app_timestamp');
   
-  // 4. Clear sessionStorage
-  sessionStorage.clear();
+  // Only clear version data, keep auth
+  localStorage.removeItem('app_version');
+  localStorage.removeItem('app_timestamp');
   
-  // 5. Force hard reload with cache bypass
-  // Use multiple methods to ensure cache is bypassed
-  const currentUrl = window.location.href;
-  const separator = currentUrl.includes('?') ? '&' : '?';
-  const nocacheUrl = `${currentUrl}${separator}_nocache=${Date.now()}`;
-  
-  // Method 1: Replace with cache-busted URL
-  window.location.replace(nocacheUrl);
-  
-  // Method 2: Fallback hard reload (in case replace doesn't work)
-  setTimeout(() => {
-    window.location.reload(true);
-  }, 100);
+  // 4. Simple reload without breaking routing - let React Router handle navigation
+  window.location.reload();
 };
