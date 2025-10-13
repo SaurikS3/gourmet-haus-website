@@ -6,7 +6,7 @@ import ProfilePage from './components/ProfilePage';
 import ContactPage from './components/ContactPage';
 import AdminSetup from './components/AdminSetup';
 import { onAuthStateChange } from './services/authService';
-import { checkForUpdates, updateStoredVersion, forceReload } from './utils/versionCheck';
+import { checkForUpdates, updateStoredVersion, forceReload, forceVersionCheck } from './utils/versionCheck';
 import './styles/index.css';
 
 function App() {
@@ -42,7 +42,24 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  // Check for version updates every 5 minutes
+  // AGGRESSIVE: Check version on EVERY page load and auto-reload if outdated
+  useEffect(() => {
+    const aggressiveVersionCheck = async () => {
+      const needsReload = await forceVersionCheck();
+      if (needsReload) {
+        console.log('🔄 New version detected - auto-reloading...');
+        // Silent reload without prompt for better UX
+        setTimeout(() => {
+          forceReload();
+        }, 500);
+      }
+    };
+
+    // Run immediately on mount (every page load/refresh)
+    aggressiveVersionCheck();
+  }, []);
+
+  // PERIODIC: Check for version updates every 5 minutes while user is active
   useEffect(() => {
     const checkVersion = async () => {
       const update = await checkForUpdates();
@@ -63,10 +80,7 @@ function App() {
       }
     };
 
-    // Check immediately on mount
-    checkVersion();
-
-    // Then check every 5 minutes
+    // Check every 5 minutes
     const interval = setInterval(checkVersion, 5 * 60 * 1000);
 
     return () => clearInterval(interval);
