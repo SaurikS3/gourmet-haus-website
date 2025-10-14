@@ -169,7 +169,13 @@ function AdminManagement({ currentUser }) {
   }
 
   return (
-    <div style={{ animation: 'fadeIn 0.4s ease' }}>
+    <div style={{ 
+      animation: 'fadeIn 0.4s ease',
+      padding: 0,
+      width: '100%',
+      maxWidth: '100%',
+      boxSizing: 'border-box'
+    }}>
       {/* Message Alert */}
       {message.text && (
         <div style={{
@@ -258,7 +264,11 @@ function AdminManagement({ currentUser }) {
           color: 'rgba(255, 255, 255, 0.5)'
         }}>Grant admin privileges to a new user by their email address</p>
 
-        <form onSubmit={handleAddAdmin} style={{ display: 'flex', gap: '12px' }}>
+        <form onSubmit={handleAddAdmin} style={{ 
+          display: 'flex', 
+          gap: '12px',
+          flexDirection: window.innerWidth <= 599 ? 'column' : 'row'
+        }}>
           <input
             type="email"
             value={newAdminEmail}
@@ -272,8 +282,10 @@ function AdminManagement({ currentUser }) {
               border: '1px solid rgba(212, 175, 55, 0.3)',
               borderRadius: '8px',
               color: '#FFFFFF',
-              fontSize: '0.95rem',
-              outline: 'none'
+              fontSize: window.innerWidth <= 599 ? '16px' : '0.95rem',
+              outline: 'none',
+              width: '100%',
+              boxSizing: 'border-box'
             }}
           />
           <button
@@ -286,11 +298,13 @@ function AdminManagement({ currentUser }) {
               border: 'none',
               borderRadius: '8px',
               color: addingAdmin ? 'rgba(255, 255, 255, 0.5)' : '#000',
-              padding: '12px 24px',
-              fontSize: '0.95rem',
+              padding: window.innerWidth <= 599 ? '14px 20px' : '12px 24px',
+              fontSize: window.innerWidth <= 599 ? '0.9rem' : '0.95rem',
               fontWeight: '700',
               cursor: addingAdmin ? 'not-allowed' : 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              minHeight: window.innerWidth <= 599 ? '48px' : 'auto',
+              width: window.innerWidth <= 599 ? '100%' : 'auto'
             }}
           >
             {addingAdmin ? 'Adding...' : 'Add Admin'}
@@ -321,7 +335,7 @@ function AdminManagement({ currentUser }) {
 
         {admins.length === 0 ? (
           <div style={{
-            padding: '48px 24px',
+            padding: window.innerWidth <= 599 ? '32px 16px' : '48px 24px',
             textAlign: 'center',
             background: 'rgba(255, 255, 255, 0.02)',
             borderRadius: '8px',
@@ -340,10 +354,14 @@ function AdminManagement({ currentUser }) {
             }}>Add admins using the form above</p>
           </div>
         ) : (
-          <div style={{ display: 'grid', gap: '12px' }}>
+          <div style={{ 
+            display: 'grid', 
+            gap: window.innerWidth <= 599 ? '10px' : '12px',
+            gridTemplateColumns: window.innerWidth <= 599 ? '1fr' : '1fr'
+          }}>
             {admins.map((admin) => (
               <div key={admin.id} style={{
-                padding: '20px',
+                padding: window.innerWidth <= 599 ? '16px' : '20px',
                 background: admin.isCoreAdmin 
                   ? 'rgba(212, 175, 55, 0.08)' 
                   : 'rgba(255, 255, 255, 0.03)',
@@ -352,8 +370,10 @@ function AdminManagement({ currentUser }) {
                   : '1px solid rgba(255, 255, 255, 0.08)',
                 borderRadius: '10px',
                 display: 'flex',
+                flexDirection: window.innerWidth <= 599 ? 'column' : 'row',
                 justifyContent: 'space-between',
-                alignItems: 'center',
+                alignItems: window.innerWidth <= 599 ? 'stretch' : 'center',
+                gap: window.innerWidth <= 599 ? '16px' : '0',
                 transition: 'all 0.2s ease'
               }}>
                 <div style={{ flex: 1 }}>
@@ -364,9 +384,11 @@ function AdminManagement({ currentUser }) {
                     marginBottom: '6px'
                   }}>
                     <div style={{
-                      fontSize: '1rem',
+                      fontSize: window.innerWidth <= 599 ? '0.95rem' : '1rem',
                       fontWeight: '600',
-                      color: '#FFFFFF'
+                      color: '#FFFFFF',
+                      wordBreak: 'break-word',
+                      overflowWrap: 'break-word'
                     }}>
                       {admin.email}
                     </div>
@@ -402,8 +424,10 @@ function AdminManagement({ currentUser }) {
                     )}
                   </div>
                   <div style={{
-                    fontSize: '0.85rem',
-                    color: 'rgba(255, 255, 255, 0.5)'
+                    fontSize: window.innerWidth <= 599 ? '0.8rem' : '0.85rem',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
                   }}>
                     {admin.isCoreAdmin 
                       ? 'Permanent administrator account' 
@@ -423,13 +447,16 @@ function AdminManagement({ currentUser }) {
                     color: admin.email.toLowerCase() === currentUser.email.toLowerCase() 
                       ? 'rgba(255, 255, 255, 0.3)' 
                       : '#f87171',
-                    padding: '8px 16px',
-                    fontSize: '0.8rem',
+                    padding: window.innerWidth <= 599 ? '12px' : '8px 16px',
+                    fontSize: window.innerWidth <= 599 ? '0.85rem' : '0.8rem',
                     fontWeight: '500',
                     cursor: admin.email.toLowerCase() === currentUser.email.toLowerCase() 
                       ? 'not-allowed' 
                       : 'pointer',
-                    transition: 'all 0.2s ease'
+                    transition: 'all 0.2s ease',
+                    minHeight: window.innerWidth <= 599 ? '44px' : 'auto',
+                    width: window.innerWidth <= 599 ? '100%' : 'auto',
+                    textAlign: 'center'
                   }}
                   onMouseEnter={(e) => {
                     if (admin.email.toLowerCase() !== currentUser.email.toLowerCase()) {
