@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from '../services/authService';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, collection, getDocs, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { isAdmin } from '../services/adminService';
 import MenuManager from './MenuManager';
 import { migrateMenuData } from '../utils/migrateMenuData';
-import { collection, getDocs } from 'firebase/firestore';
 import AdminManagement from './AdminManagement';
+import SiteSettings from './SiteSettings';
 
 function ProfilePage({ user }) {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
@@ -16,6 +15,8 @@ function ProfilePage({ user }) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [migrationStatus, setMigrationStatus] = useState({ loading: false, message: '', hasData: false });
+  const [adminMigrationStatus, setAdminMigrationStatus] = useState({ loading: false, message: '', done: false });
+  const [showAdminMigration, setShowAdminMigration] = useState(false);
   const [profileData, setProfileData] = useState({
     fullName: '',
     phone: '',
@@ -31,24 +32,129 @@ function ProfilePage({ user }) {
     orderHistory: []
   });
 
+  const checkMenuData = React.useCallback(async () => {
+    try {
+      const menuSnapshot = await getDocs(collection(db, 'menuItems'));
+      setMigrationStatus(prev => ({ ...prev, hasData: menuSnapshot.size > 0 }));
+    } catch (error) {
+      console.error('Error checking menu data:', error);
+    }
+  }, []);
+
+  const checkAdminMigrationNeeded = React.useCallback(async () => {
+    try {
+      console.log('🔍 Admin Migration Check...');
+      const adminsSnapshot = await getDocs(collection(db, 'admins'));
+      const needsMigration = adminsSnapshot.empty;
+      console.log('✅ Admin system status:', { 
+        adminsCount: adminsSnapshot.size, 
+        needsMigration,
+        admins: adminsSnapshot.docs.map(doc => doc.data().email)
+      });
+      
+      // Only show migration button if no admins exist
+      setShowAdminMigration(needsMigration);
+      
+    } catch (error) {
+      console.error('❌ Error checking admin migration:', error);
+      setShowAdminMigration(true); // Show button on error to allow manual setup
+    }
+  }, []);
+
+  const handleAdminMigration = async () => {
+    setAdminMigrationStatus({ loading: true, message: 'Migrating core admins...', done: false });
+    
+    const CORE_ADMIN_EMAILS = [
+      'artkabul@gmail.com',
+      'haidarizia@gmail.com',
+      'gourmethausva@gmail.com'
+    ];
+
+    try {
+      let addedCount = 0;
+      let skippedCount = 0;
+
+      for (const email of CORE_ADMIN_EMAILS) {
+        // Check if already exists
+        const adminsQuery = query(
+          collection(db, 'admins'),
+          where('email', '==', email.toLowerCase())
+        );
+        const existingAdmins = await getDocs(adminsQuery);
+        
+        if (!existingAdmins.empty) {
+          skippedCount++;
+          continue;
+        }
+
+        // Add to database
+        const { addDoc } = await import('firebase/firestore');
+        await addDoc(collection(db, 'admins'), {
+          email: email.toLowerCase(),
+          addedBy: 'system',
+          addedAt: new Date().toISOString(),
+          isActive: true,
+          isCoreAdmin: true
+        });
+        addedCount++;
+      }
+
+      setAdminMigrationStatus({ 
+        loading: false, 
+        message: `✅ Migration complete! Added ${addedCount} admin(s), ${skippedCount} already existed.`, 
+        done: true 
+      });
+      setShowAdminMigration(false);
+      
+      setTimeout(() => {
+        setAdminMigrationStatus({ loading: false, message: '', done: false });
+      }, 5000);
+    } catch (error) {
+      console.error('Error migrating admins:', error);
+      setAdminMigrationStatus({ 
+        loading: false, 
+        message: `❌ Migration failed: ${error.message}`, 
+        done: false 
+      });
+    }
+  };
+
   useEffect(() => {
+    console.log('🚀 ProfilePage useEffect running - user:', user?.email);
+    
     if (!user) {
       navigate('/login');
       return;
     }
 
-    const checkAdminStatus = async () => {
-      if (user?.email) {
-        const adminStatus = await isAdmin(user.email);
+    // Check if admin migration is needed FIRST
+    console.log('⏳ About to call checkAdminMigrationNeeded...');
+    checkAdminMigrationNeeded();
+
+    // Set up real-time listener for admin status
+    if (user?.email) {
+      const emailLower = user.email.toLowerCase();
+      const adminsQuery = query(
+        collection(db, 'admins'),
+        where('email', '==', emailLower),
+        where('isActive', '==', true)
+      );
+
+      const unsubscribe = onSnapshot(adminsQuery, (snapshot) => {
+        const adminStatus = !snapshot.empty;
         setIsUserAdmin(adminStatus);
         
         if (adminStatus) {
           checkMenuData();
         }
-      }
-    };
+      }, (error) => {
+        console.error('Error checking admin status:', error);
+        setIsUserAdmin(false);
+      });
 
-    checkAdminStatus();
+      // Cleanup listener on unmount
+      return () => unsubscribe();
+    }
     
     const loadProfileData = async () => {
       try {
@@ -83,16 +189,7 @@ function ProfilePage({ user }) {
     };
     
     loadProfileData();
-  }, [user, navigate]);
-
-  const checkMenuData = async () => {
-    try {
-      const menuSnapshot = await getDocs(collection(db, 'menuItems'));
-      setMigrationStatus(prev => ({ ...prev, hasData: menuSnapshot.size > 0 }));
-    } catch (error) {
-      console.error('Error checking menu data:', error);
-    }
-  };
+  }, [user, navigate, checkMenuData, checkAdminMigrationNeeded]);
 
   const handleMigration = async () => {
     setMigrationStatus({ loading: true, message: 'Migrating menu data...', hasData: false });
@@ -181,6 +278,7 @@ function ProfilePage({ user }) {
     { id: 'preferences', label: 'Preferences', icon: '⚙️' },
     ...(isUserAdmin ? [
       { id: 'admins', label: 'Admin Management', icon: '👥' },
+      { id: 'settings', label: 'Site Settings', icon: '⚙️' },
       { id: 'menu', label: 'Menu Manager', icon: '🍽️' }
     ] : [])
   ];
@@ -398,6 +496,66 @@ function ProfilePage({ user }) {
           {/* PROFILE Tab */}
           {activeTab === 'profile' && (
             <div style={{ animation: 'fadeIn 0.4s ease' }}>
+              {/* Admin Migration Notice (Only shown if admins collection is empty) */}
+              {showAdminMigration && (
+                <div style={{
+                  background: 'rgba(212, 175, 55, 0.1)',
+                  border: '1px solid rgba(212, 175, 55, 0.3)',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  marginBottom: '24px'
+                }}>
+                  <h3 style={{
+                    margin: '0 0 12px 0',
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    color: '#D4AF37',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    🔐 Admin Setup Required
+                  </h3>
+                  <p style={{
+                    margin: '0 0 16px 0',
+                    fontSize: '0.9rem',
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    lineHeight: '1.5'
+                  }}>
+                    The admin system needs to be initialized. Click below to add the core admin accounts to the database. This is a one-time setup that will enable admin features.
+                  </p>
+                  <button
+                    onClick={handleAdminMigration}
+                    disabled={adminMigrationStatus.loading}
+                    style={{
+                      background: adminMigrationStatus.loading 
+                        ? 'rgba(255, 255, 255, 0.1)' 
+                        : 'linear-gradient(135deg, #D4AF37 0%, #F4E4B3 100%)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      color: adminMigrationStatus.loading ? 'rgba(255, 255, 255, 0.5)' : '#000',
+                      padding: '12px 24px',
+                      fontSize: '0.95rem',
+                      fontWeight: '700',
+                      cursor: adminMigrationStatus.loading ? 'not-allowed' : 'pointer',
+                      boxShadow: adminMigrationStatus.loading ? 'none' : '0 2px 8px rgba(212, 175, 55, 0.3)'
+                    }}
+                  >
+                    {adminMigrationStatus.loading ? 'Setting up admins...' : 'Initialize Admin System'}
+                  </button>
+                  {adminMigrationStatus.message && (
+                    <p style={{
+                      margin: '16px 0 0 0',
+                      fontSize: '0.9rem',
+                      color: adminMigrationStatus.message.includes('✅') ? '#4ade80' : '#f87171',
+                      fontWeight: '600'
+                    }}>
+                      {adminMigrationStatus.message}
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Account Info Card */}
               <div style={{
                 background: '#1A1A1A',
@@ -1031,6 +1189,13 @@ function ProfilePage({ user }) {
           {activeTab === 'admins' && isUserAdmin && (
             <div style={{ animation: 'fadeIn 0.4s ease' }}>
               <AdminManagement currentUser={user} />
+            </div>
+          )}
+
+          {/* SITE SETTINGS Tab */}
+          {activeTab === 'settings' && isUserAdmin && (
+            <div style={{ animation: 'fadeIn 0.4s ease' }}>
+              <SiteSettings />
             </div>
           )}
 

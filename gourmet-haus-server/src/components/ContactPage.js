@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { db } from '../firebase/config';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 function ContactPage() {
   const navigate = useNavigate();
@@ -14,6 +16,30 @@ function ContactPage() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [loading, setLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [contactSettings, setContactSettings] = useState({
+    location: 'TBD',
+    phone: '(703) 867-5112',
+    hours: 'TBD'
+  });
+
+  useEffect(() => {
+    // Real-time listener for contact settings
+    const contactDocRef = doc(db, 'siteSettings', 'contact');
+    const unsubscribe = onSnapshot(contactDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        setContactSettings({
+          location: data.location || 'TBD',
+          phone: data.phone || '(703) 867-5112',
+          hours: data.hours || 'TBD'
+        });
+      }
+    }, (error) => {
+      console.error('Error fetching contact settings:', error);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({
@@ -236,19 +262,19 @@ function ContactPage() {
             <div className="info-card">
               <div className="info-icon">📍</div>
               <h3 className="info-title">Visit Us</h3>
-              <p className="info-text">TBD</p>
+              <p className="info-text">{contactSettings.location}</p>
             </div>
 
             <div className="info-card">
               <div className="info-icon">📞</div>
               <h3 className="info-title">Call Us</h3>
-              <p className="info-text">(703) 867-5112</p>
+              <p className="info-text">{contactSettings.phone}</p>
             </div>
 
             <div className="info-card">
               <div className="info-icon">🕐</div>
               <h3 className="info-title">Hours</h3>
-              <p className="info-text">TBD</p>
+              <p className="info-text">{contactSettings.hours}</p>
             </div>
           </div>
         </div>

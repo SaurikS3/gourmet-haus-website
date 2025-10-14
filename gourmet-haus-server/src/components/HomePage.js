@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, onSnapshot, query, orderBy, doc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
 function HomePage({ user }) {
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [contactSettings, setContactSettings] = useState({
+    location: 'TBD',
+    phone: '(703) 867-5112',
+    hours: 'TBD'
+  });
 
   // Real-time sync with Firestore for menu items - ONLY Firestore, no hardcoded fallback
   useEffect(() => {
@@ -30,6 +35,25 @@ function HomePage({ user }) {
       console.error('Error fetching menu items:', error);
       setMenuItems([]);
       setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Real-time sync with Firestore for contact settings
+  useEffect(() => {
+    const contactDocRef = doc(db, 'siteSettings', 'contact');
+    const unsubscribe = onSnapshot(contactDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        setContactSettings({
+          location: data.location || 'TBD',
+          phone: data.phone || '(703) 867-5112',
+          hours: data.hours || 'TBD'
+        });
+      }
+    }, (error) => {
+      console.error('Error fetching contact settings:', error);
     });
 
     return () => unsubscribe();
@@ -374,15 +398,15 @@ function HomePage({ user }) {
           <div className="footer-info">
             <div className="footer-section">
               <h4>LOCATION</h4>
-              <p>TBD</p>
+              <p>{contactSettings.location}</p>
             </div>
             <div className="footer-section">
               <h4>HOURS</h4>
-              <p>TBD</p>
+              <p>{contactSettings.hours}</p>
             </div>
             <div className="footer-section">
               <h4>CONTACT</h4>
-              <p>(703) 867-5112</p>
+              <p>{contactSettings.phone}</p>
             </div>
           </div>
         </footer>
