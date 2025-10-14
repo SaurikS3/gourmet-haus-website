@@ -13,26 +13,14 @@ import {
 } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
-// Admin email whitelist - Core admins that cannot be removed
-const ADMIN_EMAILS = [
-  'artkabul@gmail.com',
-  'haidarizia@gmail.com',
-  'gourmethausva@gmail.com'
-];
-
 /**
  * Check if a user email is an admin
- * Checks both hardcoded admins and database admins
+ * Checks database admins only (migration from hardcoded list is complete)
  */
 export const isAdmin = async (email) => {
   if (!email) return false;
   
   const emailLower = email.toLowerCase();
-  
-  // Check hardcoded admins first
-  if (ADMIN_EMAILS.includes(emailLower)) {
-    return true;
-  }
   
   // Check database admins
   try {
@@ -44,15 +32,6 @@ export const isAdmin = async (email) => {
     console.error('Error checking admin status:', error);
     return false;
   }
-};
-
-/**
- * Synchronous version - only checks hardcoded admins
- * Use this for immediate checks where you can't await
- */
-export const isAdminSync = (email) => {
-  if (!email) return false;
-  return ADMIN_EMAILS.includes(email.toLowerCase());
 };
 
 /**
