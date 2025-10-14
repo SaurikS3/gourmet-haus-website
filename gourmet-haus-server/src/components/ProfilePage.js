@@ -7,6 +7,7 @@ import { isAdmin } from '../services/adminService';
 import MenuManager from './MenuManager';
 import { migrateMenuData } from '../utils/migrateMenuData';
 import { collection, getDocs } from 'firebase/firestore';
+import AdminManagement from './AdminManagement';
 
 function ProfilePage({ user }) {
   const [isUserAdmin, setIsUserAdmin] = useState(false);
@@ -36,14 +37,18 @@ function ProfilePage({ user }) {
       return;
     }
 
-    if (user?.email) {
-      const adminStatus = isAdmin(user.email);
-      setIsUserAdmin(adminStatus);
-      
-      if (adminStatus) {
-        checkMenuData();
+    const checkAdminStatus = async () => {
+      if (user?.email) {
+        const adminStatus = await isAdmin(user.email);
+        setIsUserAdmin(adminStatus);
+        
+        if (adminStatus) {
+          checkMenuData();
+        }
       }
-    }
+    };
+
+    checkAdminStatus();
     
     const loadProfileData = async () => {
       try {
@@ -174,7 +179,10 @@ function ProfilePage({ user }) {
     { id: 'orders', label: 'Orders', icon: '🛍️' },
     { id: 'favorites', label: 'Favorites', icon: '❤️' },
     { id: 'preferences', label: 'Preferences', icon: '⚙️' },
-    ...(isUserAdmin ? [{ id: 'menu', label: 'Menu Manager', icon: '🍽️' }] : [])
+    ...(isUserAdmin ? [
+      { id: 'admins', label: 'Admin Management', icon: '👥' },
+      { id: 'menu', label: 'Menu Manager', icon: '🍽️' }
+    ] : [])
   ];
 
   return (
@@ -1016,6 +1024,13 @@ function ProfilePage({ user }) {
                   Save Preferences
                 </button>
               </div>
+            </div>
+          )}
+
+          {/* ADMIN MANAGEMENT Tab */}
+          {activeTab === 'admins' && isUserAdmin && (
+            <div style={{ animation: 'fadeIn 0.4s ease' }}>
+              <AdminManagement currentUser={user} />
             </div>
           )}
 
