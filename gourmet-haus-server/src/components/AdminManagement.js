@@ -123,17 +123,7 @@ function AdminManagement({ currentUser }) {
   };
 
   const handleRemoveAdmin = async (admin) => {
-    // Prevent removing core admins
-    if (admin.isCoreAdmin) {
-      setMessage({ 
-        type: 'error', 
-        text: 'Cannot remove core admin accounts' 
-      });
-      setTimeout(() => setMessage({ type: '', text: '' }), 3000);
-      return;
-    }
-
-    // Prevent removing yourself
+    // Prevent removing yourself only
     if (admin.email.toLowerCase() === currentUser.email.toLowerCase()) {
       setMessage({ 
         type: 'error', 
@@ -417,26 +407,26 @@ function AdminManagement({ currentUser }) {
                 </div>
                 <button
                   onClick={() => handleRemoveAdmin(admin)}
-                  disabled={admin.isCoreAdmin || admin.email.toLowerCase() === currentUser.email.toLowerCase()}
+                  disabled={admin.email.toLowerCase() === currentUser.email.toLowerCase()}
                   style={{
                     background: 'transparent',
-                    border: `1px solid ${admin.isCoreAdmin || admin.email.toLowerCase() === currentUser.email.toLowerCase() 
+                    border: `1px solid ${admin.email.toLowerCase() === currentUser.email.toLowerCase() 
                       ? 'rgba(255, 255, 255, 0.15)' 
                       : 'rgba(248, 113, 113, 0.3)'}`,
                     borderRadius: '6px',
-                    color: admin.isCoreAdmin || admin.email.toLowerCase() === currentUser.email.toLowerCase() 
+                    color: admin.email.toLowerCase() === currentUser.email.toLowerCase() 
                       ? 'rgba(255, 255, 255, 0.3)' 
                       : '#f87171',
                     padding: '8px 16px',
                     fontSize: '0.8rem',
                     fontWeight: '500',
-                    cursor: admin.isCoreAdmin || admin.email.toLowerCase() === currentUser.email.toLowerCase() 
+                    cursor: admin.email.toLowerCase() === currentUser.email.toLowerCase() 
                       ? 'not-allowed' 
                       : 'pointer',
                     transition: 'all 0.2s ease'
                   }}
                   onMouseEnter={(e) => {
-                    if (!admin.isCoreAdmin && admin.email.toLowerCase() !== currentUser.email.toLowerCase()) {
+                    if (admin.email.toLowerCase() !== currentUser.email.toLowerCase()) {
                       e.target.style.background = 'rgba(248, 113, 113, 0.1)';
                     }
                   }}
@@ -444,7 +434,7 @@ function AdminManagement({ currentUser }) {
                     e.target.style.background = 'transparent';
                   }}
                 >
-                  {admin.isCoreAdmin ? 'Protected' : 'Remove'}
+                  Remove
                 </button>
               </div>
             ))}
