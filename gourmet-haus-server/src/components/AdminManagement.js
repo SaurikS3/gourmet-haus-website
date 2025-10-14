@@ -94,6 +94,12 @@ function AdminManagement({ currentUser }) {
       return;
     }
 
+    // Only allow Gmail accounts
+    if (!emailLower.endsWith('@gmail.com')) {
+      setMessage({ type: 'error', text: 'Only Gmail accounts are allowed as admins' });
+      return;
+    }
+
     // Check if already exists
     if (admins.some(admin => admin.email.toLowerCase() === emailLower)) {
       setMessage({ type: 'error', text: 'This email is already an admin' });
