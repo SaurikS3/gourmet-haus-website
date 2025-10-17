@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { collection, onSnapshot, query, orderBy, doc } from 'firebase/firestore';
 import { db } from '../firebase/config';
 
-function HomePage({ user }) {
+const HomePage = React.memo(({ user }) => {
   const navigate = useNavigate();
   const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -13,8 +13,8 @@ function HomePage({ user }) {
     hours: 'TBD'
   });
 
-  // Haptic feedback helper function - iOS Safari compatible
-  const triggerHaptic = () => {
+  // Haptic feedback helper function - iOS Safari compatible - memoized
+  const triggerHaptic = useCallback(() => {
     try {
       // Try Vibration API (Android, some browsers)
       if (navigator.vibrate) {
@@ -34,7 +34,7 @@ function HomePage({ user }) {
     } catch (e) {
       console.log('Haptic feedback not supported');
     }
-  };
+  }, []);
 
   // Real-time sync with Firestore for menu items - ONLY Firestore, no hardcoded fallback
   useEffect(() => {
@@ -115,9 +115,96 @@ function HomePage({ user }) {
     itemSequentialNumbers[item.id] = counter++;
   });
 
+  // Page Visibility API - pause animations when tab is hidden
   useEffect(() => {
-    // Lightweight scroll handler - NO parallax calculations
+    const handleVisibilityChange = () => {
+      const isHidden = document.hidden;
+      
+      // Pause/resume orb animations
+      document.querySelectorAll('.orb').forEach(orb => {
+        if (isHidden) {
+          orb.classList.add('paused');
+        } else {
+          orb.classList.remove('paused');
+        }
+      });
+      
+      // Pause/resume star animations
+      document.querySelectorAll('.stars-layer').forEach(layer => {
+        if (isHidden) {
+          layer.classList.add('paused');
+        } else {
+          layer.classList.remove('paused');
+        }
+      });
+      
+      // Pause/resume brand name animations
+      document.querySelectorAll('.brand-name, .brand-tagline, .brand-divider').forEach(el => {
+        if (isHidden) {
+          el.classList.add('paused');
+        } else {
+          el.classList.remove('paused');
+        }
+      });
+      
+      // Pause/resume menu item animations
+      document.querySelectorAll('.menu-item').forEach(item => {
+        if (isHidden) {
+          item.classList.add('paused');
+        } else {
+          item.classList.remove('paused');
+        }
+      });
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, []);
+
+  // Intersection Observer for viewport-aware animation pausing
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: '50px', // Start pausing when 50px outside viewport
+      threshold: 0
+    };
+
+    const handleIntersection = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('paused');
+        } else {
+          entry.target.classList.add('paused');
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(handleIntersection, observerOptions);
+
+    // Observe animated elements for performance
+    const animatedElements = [
+      ...document.querySelectorAll('.brand-name'),
+      ...document.querySelectorAll('.brand-tagline'),
+      ...document.querySelectorAll('.brand-divider'),
+      ...document.querySelectorAll('.menu-item')
+    ];
+
+    animatedElements.forEach(el => observer.observe(el));
+
+    return () => {
+      animatedElements.forEach(el => observer.unobserve(el));
+    };
+  }, [menuItems]); // Re-run when menu items change
+
+  useEffect(() => {
+    // Lightweight scroll handler - NO parallax calculations - throttled
+    let ticking = false;
     const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
       const scrolled = window.pageYOffset;
       const nav = document.querySelector('.luxury-nav');
       if (nav) {
@@ -128,13 +215,18 @@ function HomePage({ user }) {
         }
       }
 
-      const scrollToTopBtn = document.getElementById('scroll-to-top');
-      if (scrollToTopBtn) {
-        if (scrolled > 500) {
-          scrollToTopBtn.classList.add('visible');
-        } else {
-          scrollToTopBtn.classList.remove('visible');
-        }
+          const scrollToTopBtn = document.getElementById('scroll-to-top');
+          if (scrollToTopBtn) {
+            if (scrolled > 500) {
+              scrollToTopBtn.classList.add('visible');
+            } else {
+              scrollToTopBtn.classList.remove('visible');
+            }
+          }
+          
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 
@@ -473,6 +565,9 @@ function HomePage({ user }) {
       </button>
     </>
   );
-}
+});
+
+// Display name for debugging
+HomePage.displayName = 'HomePage';
 
 export default HomePage;

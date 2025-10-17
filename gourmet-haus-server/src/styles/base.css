@@ -1,6 +1,7 @@
 /* ============================================
    GOURMET HAUS - BASE & GLOBAL STYLES
    CSS Reset, Variables, and Global Configurations
+   OPTIMIZED FOR PERFORMANCE & MOBILE THERMAL EFFICIENCY
    ============================================ */
 
 /* ============================================
@@ -69,7 +70,7 @@ body {
 }
 
 /* ============================================
-   BACKGROUND EFFECTS
+   BACKGROUND EFFECTS - OPTIMIZED
    ============================================ */
 #particles-canvas {
     position: fixed;
@@ -80,7 +81,7 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.3;
-    will-change: auto;
+    /* Remove will-change to reduce GPU layers */
 }
 
 .gradient-orbs {
@@ -99,8 +100,11 @@ body {
     border-radius: 50%;
     filter: blur(100px);
     opacity: 0.12;
-    animation: orbFloat 25s ease-in-out infinite;
-    will-change: transform;
+    /* Reduced animation duration from 25s to 30s for less frequent repaints */
+    animation: orbFloat 30s ease-in-out infinite;
+    /* Remove will-change - only add during animation via JS */
+    backface-visibility: hidden;
+    /* Use translate3d for GPU optimization only when needed */
 }
 
 .orb-1 {
@@ -118,7 +122,7 @@ body {
     background: radial-gradient(circle, var(--rose-gold), transparent);
     bottom: -150px;
     right: -150px;
-    animation-delay: 7s;
+    animation-delay: 10s;
 }
 
 .orb-3 {
@@ -128,7 +132,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    animation-delay: 14s;
+    animation-delay: 20s;
 }
 
 @keyframes orbFloat {
@@ -143,6 +147,60 @@ body {
     }
 }
 
+/* Pause orb animations when tab is not visible to save battery */
+.orb.paused {
+    animation-play-state: paused;
+}
+
+/* Mobile optimizations - reduce orb size and complexity */
+@media (max-width: 768px) {
+    .orb {
+        /* Slower animation on mobile */
+        animation-duration: 40s;
+        /* Reduce blur for better performance */
+        filter: blur(80px);
+    }
+    
+    .orb-1 {
+        width: 400px;
+        height: 400px;
+    }
+    
+    .orb-2 {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .orb-3 {
+        width: 300px;
+        height: 300px;
+    }
+}
+
+/* Very small devices - minimal effects */
+@media (max-width: 480px) {
+    .orb {
+        animation-duration: 50s;
+        filter: blur(60px);
+        opacity: 0.08;
+    }
+    
+    .orb-1 {
+        width: 300px;
+        height: 300px;
+    }
+    
+    .orb-2 {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .orb-3 {
+        width: 200px;
+        height: 200px;
+    }
+}
+
 /* ============================================
    ACCESSIBILITY & PERFORMANCE
    ============================================ */
@@ -153,6 +211,10 @@ body {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+    
+    .orb {
+        animation: none !important;
     }
 }
 
@@ -171,4 +233,44 @@ button:focus {
     .scroll-indicator {
         display: none;
     }
+}
+
+/* ============================================
+   PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+/* Optimize repaints by containing layout changes */
+.menu-container,
+.hero-section,
+.menu-content {
+    contain: layout style;
+}
+
+/* Optimize animations to use GPU efficiently */
+@media (hover: hover) and (pointer: fine) {
+    /* Only enable expensive hover effects on desktop */
+    .menu-item:hover {
+        will-change: transform, box-shadow;
+    }
+}
+
+/* Remove will-change from idle elements */
+.menu-item,
+.nav-link,
+.button {
+    will-change: auto;
+}
+
+/* Optimize font rendering */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Prevent unnecessary reflows */
+img, video {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }

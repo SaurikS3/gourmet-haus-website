@@ -34,9 +34,16 @@
     background: var(--champagne-gold);
     border-radius: 50%;
     box-shadow: 0 0 2px var(--champagne-gold);
-    animation: simpleTwinkle 6s ease-in-out infinite;
+    /* Slower animation for reduced CPU usage */
+    animation: simpleTwinkle 8s ease-in-out infinite;
     pointer-events: none;
     opacity: 0.3;
+    backface-visibility: hidden;
+}
+
+/* Pause star animations when off-screen or tab hidden */
+.stars-layer.paused .star-twinkle {
+    animation-play-state: paused;
 }
 
 @keyframes simpleTwinkle {
@@ -248,13 +255,27 @@
     text-shadow: none;
     filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.4))
             drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+    /* Slower animations for reduced CPU usage */
     animation: 
-        letterFloat 4s ease-in-out infinite,
-        gradientShift 6s ease-in-out infinite;
+        letterFloat 6s ease-in-out infinite,
+        gradientShift 8s ease-in-out infinite;
     animation-delay: calc(var(--i) * 0.1s);
-    will-change: transform;
+    /* Remove will-change from idle state - only add during active interaction */
     position: relative;
     transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+/* Only add will-change on desktop hover for better performance */
+@media (hover: hover) and (pointer: fine) {
+    .brand-name .letter:hover {
+        will-change: transform;
+    }
+}
+
+/* Pause animations when element is off-screen */
+.brand-name.paused .letter {
+    animation-play-state: paused;
 }
 
 .brand-name .letter::after {
@@ -305,8 +326,15 @@
     font-size: 1.5rem;
     color: var(--champagne-gold);
     text-shadow: 0 0 20px var(--champagne-gold);
-    animation: diamondRotate 4s ease-in-out infinite;
+    /* Slower animation for reduced CPU usage */
+    animation: diamondRotate 6s ease-in-out infinite;
     display: inline-block;
+    backface-visibility: hidden;
+}
+
+/* Pause diamond animation when off-screen */
+.brand-divider.paused .divider-diamond {
+    animation-play-state: paused;
 }
 
 @keyframes diamondRotate {
@@ -341,15 +369,25 @@
     display: inline-flex;
     gap: 0.05em;
     opacity: 1;
-    animation: taglineWordFloat 3s ease-in-out infinite;
+    /* Slower animations for reduced CPU usage */
+    animation: taglineWordFloat 4s ease-in-out infinite;
     animation-delay: calc(var(--delay) * 0.2s);
+    backface-visibility: hidden;
 }
 
 .tagline-letter {
     display: inline-block;
     opacity: 1;
-    animation: taglineLetterFloat 4s ease-in-out infinite;
+    /* Slower animations for reduced CPU usage */
+    animation: taglineLetterFloat 5s ease-in-out infinite;
     animation-delay: calc(var(--delay) * 0.2s + var(--letter-delay) * 0.05s);
+    backface-visibility: hidden;
+}
+
+/* Pause animations when element is off-screen */
+.brand-tagline.paused .tagline-word,
+.brand-tagline.paused .tagline-letter {
+    animation-play-state: paused;
 }
 
 @keyframes taglineWordFloat {
@@ -622,15 +660,25 @@
     display: inline-flex;
     gap: 0.05em;
     opacity: 1;
-    animation: menuItemWordFloat 3s ease-in-out infinite;
+    /* Slower animations for reduced CPU usage */
+    animation: menuItemWordFloat 4s ease-in-out infinite;
     animation-delay: calc(var(--delay) * 0.2s);
+    backface-visibility: hidden;
 }
 
 .menu-item-letter {
     display: inline-block;
     opacity: 1;
-    animation: menuItemLetterFloat 4s ease-in-out infinite;
+    /* Slower animations for reduced CPU usage */
+    animation: menuItemLetterFloat 5s ease-in-out infinite;
     animation-delay: calc(var(--delay) * 0.2s + var(--letter-delay) * 0.05s);
+    backface-visibility: hidden;
+}
+
+/* Pause animations when menu item is off-screen */
+.menu-item.paused .menu-item-word,
+.menu-item.paused .menu-item-letter {
+    animation-play-state: paused;
 }
 
 @keyframes menuItemWordFloat {
