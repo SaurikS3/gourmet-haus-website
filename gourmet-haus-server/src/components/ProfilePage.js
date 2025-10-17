@@ -17,6 +17,29 @@ function ProfilePage({ user }) {
   const [migrationStatus, setMigrationStatus] = useState({ loading: false, message: '', hasData: false });
   const [adminMigrationStatus, setAdminMigrationStatus] = useState({ loading: false, message: '', done: false });
   const [showAdminMigration, setShowAdminMigration] = useState(false);
+
+  // Haptic feedback helper function - iOS Safari compatible
+  const triggerHaptic = () => {
+    try {
+      // Try Vibration API (Android, some browsers)
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      // iOS Safari fallback: WebKit browsers don't support Vibration API
+      // Create invisible checkbox switch and toggle it to trigger haptic
+      else {
+        let el = document.createElement('div');
+        let id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute("style", "display:none !important;opacity:0 !important;visibility:hidden !important;");
+        document.querySelector('body').appendChild(el);
+        el.querySelector('label').click();
+        setTimeout(function(){ el.remove(); }, 1500);
+      }
+    } catch (e) {
+      console.log('Haptic feedback not supported');
+    }
+  };
   const [profileData, setProfileData] = useState({
     fullName: '',
     phone: '',
@@ -341,6 +364,7 @@ function ProfilePage({ user }) {
             <button
               key={item.id}
               onClick={() => {
+                triggerHaptic();
                 setActiveTab(item.id);
                 if (window.innerWidth < 768) setIsSidebarOpen(false);
               }}
@@ -382,7 +406,10 @@ function ProfilePage({ user }) {
 
         {/* Sidebar Toggle */}
         <button
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          onClick={() => {
+            triggerHaptic();
+            setIsSidebarOpen(!isSidebarOpen);
+          }}
           style={{
             padding: '16px',
             background: 'transparent',
@@ -441,7 +468,10 @@ function ProfilePage({ user }) {
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => {
+                triggerHaptic();
+                navigate('/');
+              }}
               style={{
                 background: 'transparent',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -525,7 +555,10 @@ function ProfilePage({ user }) {
                     The admin system needs to be initialized. Click below to add the core admin accounts to the database. This is a one-time setup that will enable admin features.
                   </p>
                   <button
-                    onClick={handleAdminMigration}
+                    onClick={() => {
+                      triggerHaptic();
+                      handleAdminMigration();
+                    }}
                     disabled={adminMigrationStatus.loading}
                     style={{
                       background: adminMigrationStatus.loading 
@@ -578,7 +611,10 @@ function ProfilePage({ user }) {
                   }}>Account Information</h2>
                   {!isEditing && (
                     <button
-                      onClick={() => setIsEditing(true)}
+                      onClick={() => {
+                        triggerHaptic();
+                        setIsEditing(true);
+                      }}
                       style={{
                         background: 'transparent',
                         border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -834,7 +870,10 @@ function ProfilePage({ user }) {
                 {isEditing && (
                   <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                     <button
-                      onClick={handleSaveProfile}
+                      onClick={() => {
+                        triggerHaptic();
+                        handleSaveProfile();
+                      }}
                       style={{
                         flex: 1,
                         background: 'linear-gradient(135deg, #D4AF37 0%, #F4E4B3 100%)',
@@ -850,7 +889,10 @@ function ProfilePage({ user }) {
                       Save Changes
                     </button>
                     <button
-                      onClick={() => setIsEditing(false)}
+                      onClick={() => {
+                        triggerHaptic();
+                        setIsEditing(false);
+                      }}
                       style={{
                         flex: 1,
                         background: 'transparent',
@@ -918,7 +960,10 @@ function ProfilePage({ user }) {
                       </div>
                     </div>
                     <button
-                      onClick={handleSignOut}
+                      onClick={() => {
+                        triggerHaptic();
+                        handleSignOut();
+                      }}
                       style={{
                         background: 'transparent',
                         border: '1px solid rgba(255, 255, 255, 0.15)',
@@ -1144,7 +1189,10 @@ function ProfilePage({ user }) {
                   {['Vegetarian', 'Vegan', 'Gluten-Free', 'Halal', 'Dairy-Free', 'Nut-Free'].map((pref) => (
                     <button
                       key={pref}
-                      onClick={() => toggleDietaryPreference(pref)}
+                      onClick={() => {
+                        triggerHaptic();
+                        toggleDietaryPreference(pref);
+                      }}
                       style={{
                         padding: '12px',
                         background: profileData.dietaryPreferences.includes(pref)
@@ -1167,7 +1215,10 @@ function ProfilePage({ user }) {
                 </div>
 
                 <button
-                  onClick={handleSaveProfile}
+                  onClick={() => {
+                    triggerHaptic();
+                    handleSaveProfile();
+                  }}
                   style={{
                     background: 'linear-gradient(135deg, #D4AF37 0%, #F4E4B3 100%)',
                     border: 'none',
@@ -1225,7 +1276,10 @@ function ProfilePage({ user }) {
                     Populate Firestore database with menu data.
                   </p>
                   <button
-                    onClick={handleMigration}
+                    onClick={() => {
+                      triggerHaptic();
+                      handleMigration();
+                    }}
                     disabled={migrationStatus.loading}
                     style={{
                       background: migrationStatus.loading 
@@ -1260,28 +1314,68 @@ function ProfilePage({ user }) {
         </div>
       </main>
 
-      {/* Mobile Menu Toggle */}
-      <button
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+      {/* Mobile Menu Toggle - Swipeable Edge Tab */}
+      <div
+        onClick={() => {
+          triggerHaptic();
+          setIsSidebarOpen(!isSidebarOpen);
+        }}
+        onTouchStart={(e) => {
+          const touch = e.touches[0];
+          e.currentTarget.dataset.startX = touch.clientX;
+        }}
+        onTouchMove={(e) => {
+          const touch = e.touches[0];
+          const startX = parseFloat(e.currentTarget.dataset.startX || '0');
+          const diffX = touch.clientX - startX;
+          
+          if (diffX > 50 && !isSidebarOpen) {
+            setIsSidebarOpen(true);
+          }
+        }}
         style={{
           display: 'none',
           position: 'fixed',
-          bottom: '20px',
-          right: '20px',
-          width: '56px',
-          height: '56px',
-          background: 'linear-gradient(135deg, #D4AF37 0%, #F4E4B3 100%)',
+          top: '50%',
+          left: isSidebarOpen ? '-100px' : '0',
+          transform: 'translateY(-50%)',
+          width: '32px',
+          height: '80px',
+          background: 'linear-gradient(90deg, rgba(212, 175, 55, 0.95) 0%, rgba(212, 175, 55, 0.85) 100%)',
           border: 'none',
-          borderRadius: '50%',
+          borderTopRightRadius: '12px',
+          borderBottomRightRadius: '12px',
           color: '#000',
-          fontSize: '1.5rem',
+          fontSize: '1.2rem',
           cursor: 'pointer',
-          boxShadow: '0 4px 20px rgba(212, 175, 55, 0.4)',
-          zIndex: 101
+          boxShadow: '2px 0 12px rgba(212, 175, 55, 0.3)',
+          zIndex: 101,
+          transition: 'left 0.3s ease, transform 0.2s ease',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          touchAction: 'none',
+          userSelect: 'none'
+        }}
+        onMouseEnter={(e) => {
+          if (!isSidebarOpen) {
+            e.currentTarget.style.left = '0px';
+            e.currentTarget.style.transform = 'translateY(-50%) translateX(4px)';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isSidebarOpen) {
+            e.currentTarget.style.left = '0px';
+            e.currentTarget.style.transform = 'translateY(-50%)';
+          }
         }}
       >
-        ☰
-      </button>
+        <span style={{
+          fontSize: '1.3rem',
+          fontWeight: 'bold',
+          transition: 'transform 0.2s ease'
+        }}>›</span>
+      </div>
 
       <style>{`
         @keyframes fadeIn {

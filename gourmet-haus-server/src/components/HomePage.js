@@ -13,6 +13,29 @@ function HomePage({ user }) {
     hours: 'TBD'
   });
 
+  // Haptic feedback helper function - iOS Safari compatible
+  const triggerHaptic = () => {
+    try {
+      // Try Vibration API (Android, some browsers)
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      // iOS Safari fallback: WebKit browsers don't support Vibration API
+      // Create invisible checkbox switch and toggle it to trigger haptic
+      else {
+        let el = document.createElement('div');
+        let id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute("style", "display:none !important;opacity:0 !important;visibility:hidden !important;");
+        document.querySelector('body').appendChild(el);
+        el.querySelector('label').click();
+        setTimeout(function(){ el.remove(); }, 1500);
+      }
+    } catch (e) {
+      console.log('Haptic feedback not supported');
+    }
+  };
+
   // Real-time sync with Firestore for menu items - ONLY Firestore, no hardcoded fallback
   useEffect(() => {
     const menuQuery = query(
@@ -138,6 +161,7 @@ function HomePage({ user }) {
     const navLinks = document.querySelector('.nav-links');
     
     const toggleMenu = () => {
+      triggerHaptic();
       mobileToggle?.classList.toggle('active');
       navLinks?.classList.toggle('active');
     };
@@ -157,6 +181,7 @@ function HomePage({ user }) {
     // Scroll to top
     const scrollToTopBtn = document.getElementById('scroll-to-top');
     const scrollToTop = () => {
+      triggerHaptic();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     scrollToTopBtn?.addEventListener('click', scrollToTop);
@@ -227,6 +252,7 @@ function HomePage({ user }) {
                 className="nav-link"
                 onClick={(e) => {
                   e.preventDefault();
+                  triggerHaptic();
                   const mobileToggle = document.querySelector('.mobile-menu-toggle');
                   const navLinks = document.querySelector('.nav-links');
                   mobileToggle?.classList.remove('active');
@@ -243,6 +269,7 @@ function HomePage({ user }) {
             );
           })}
           <button onClick={() => {
+            triggerHaptic();
             const mobileToggle = document.querySelector('.mobile-menu-toggle');
             const navLinks = document.querySelector('.nav-links');
             mobileToggle?.classList.remove('active');
@@ -252,6 +279,7 @@ function HomePage({ user }) {
             CONTACT
           </button>
           <button onClick={() => {
+            triggerHaptic();
             const mobileToggle = document.querySelector('.mobile-menu-toggle');
             const navLinks = document.querySelector('.nav-links');
             mobileToggle?.classList.remove('active');
@@ -304,6 +332,7 @@ function HomePage({ user }) {
             </p>
             <div className="brand-ornament bottom"></div>
             <div className="scroll-indicator" onClick={() => {
+              triggerHaptic();
               const firstSection = document.getElementById('burgers');
               if (firstSection) {
                 const offsetTop = firstSection.offsetTop - 100;
@@ -318,8 +347,26 @@ function HomePage({ user }) {
 
         <main className="menu-content">
           {loading ? (
-            <div style={{ textAlign: 'center', padding: '4rem 0' }}>
-              <p>Loading menu...</p>
+            <div className="skeleton-container">
+              {[1, 2, 3].map((section) => (
+                <div key={section} className="skeleton-section">
+                  <div className="skeleton-header">
+                    <div className="skeleton-line skeleton-line-short"></div>
+                  </div>
+                  <div className="skeleton-items">
+                    {[1, 2, 3].map((item) => (
+                      <div key={item} className="skeleton-item">
+                        <div className="skeleton-item-header">
+                          <div className="skeleton-number"></div>
+                          <div className="skeleton-line skeleton-line-medium"></div>
+                        </div>
+                        <div className="skeleton-line skeleton-line-long"></div>
+                        <div className="skeleton-line skeleton-line-medium"></div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ) : Object.keys(groupedItems).length === 0 ? (
             <div style={{ textAlign: 'center', padding: '4rem 0' }}>
@@ -360,7 +407,13 @@ function HomePage({ user }) {
                     
                     <div className="menu-items">
                       {items.map((item, index) => (
-                        <article key={item.id} className="menu-item" data-luxury={item.luxuryType || 'standard'}>
+                        <article 
+                          key={item.id} 
+                          className="menu-item" 
+                          data-luxury={item.luxuryType || 'standard'}
+                          onClick={triggerHaptic}
+                          style={{ cursor: 'pointer' }}
+                        >
                           {item.badge && <div className="item-luxury-badge">{item.badge}</div>}
                           <div className="item-header">
                             <div className="item-number">{itemSequentialNumbers[item.id]}</div>

@@ -22,6 +22,29 @@ function ContactPage() {
     hours: 'TBD'
   });
 
+  // Haptic feedback helper function - iOS Safari compatible
+  const triggerHaptic = () => {
+    try {
+      // Try Vibration API (Android, some browsers)
+      if (navigator.vibrate) {
+        navigator.vibrate(50);
+      }
+      // iOS Safari fallback: WebKit browsers don't support Vibration API
+      // Create invisible checkbox switch and toggle it to trigger haptic
+      else {
+        let el = document.createElement('div');
+        let id = Math.random().toString(36).slice(2);
+        el.innerHTML = `<input type="checkbox" id="${id}" switch /><label for="${id}"></label>`;
+        el.setAttribute("style", "display:none !important;opacity:0 !important;visibility:hidden !important;");
+        document.querySelector('body').appendChild(el);
+        el.querySelector('label').click();
+        setTimeout(function(){ el.remove(); }, 1500);
+      }
+    } catch (e) {
+      console.log('Haptic feedback not supported');
+    }
+  };
+
   useEffect(() => {
     // Real-time listener for contact settings
     const contactDocRef = doc(db, 'siteSettings', 'contact');
@@ -115,12 +138,18 @@ function ContactPage() {
 
       {/* Navigation */}
       <nav className="luxury-nav">
-        <div className="nav-logo-container" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+        <div className="nav-logo-container" onClick={() => {
+          triggerHaptic();
+          navigate('/');
+        }} style={{ cursor: 'pointer' }}>
           <img src="/Icon Logo transparent gourmet-haus-logo.svg" alt="Gourmet Haus" className="nav-logo-svg" />
         </div>
         <button 
           className={`mobile-menu-toggle ${mobileMenuOpen ? 'active' : ''}`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          onClick={() => {
+            triggerHaptic();
+            setMobileMenuOpen(!mobileMenuOpen);
+          }}
           aria-label="Menu"
         >
           <span></span>
@@ -131,6 +160,7 @@ function ContactPage() {
           <button 
             className="nav-link" 
             onClick={() => {
+              triggerHaptic();
               setMobileMenuOpen(false);
               navigate('/');
             }}
@@ -139,7 +169,10 @@ function ContactPage() {
           </button>
           <button 
             className="nav-link active"
-            onClick={() => setMobileMenuOpen(false)}
+            onClick={() => {
+              triggerHaptic();
+              setMobileMenuOpen(false);
+            }}
           >
             CONTACT
           </button>
@@ -253,6 +286,7 @@ function ContactPage() {
               type="submit"
               className="submit-button"
               disabled={loading}
+              onClick={triggerHaptic}
             >
               {loading ? 'Sending...' : 'Send Message'}
             </button>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Haus - System Flow</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e4c1 50%, #d4af37 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.3)); }
+            50% { filter: drop-shadow(0 0 40px rgba(212, 175, 55, 0.6)); }
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.3rem;
+            color: #d4af37;
+            margin-bottom: 60px;
+            opacity: 0.9;
+        }
+
+        .diagram-section {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 50px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #d4af37;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 40px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .diagram-section { padding: 20px; }
+            .mermaid { 
+                overflow-x: auto;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍽️ Gourmet Haus System Flow</h1>
+        <p class="subtitle">How Your Restaurant Platform Works - From Start to Finish</p>
+
+        <!-- Main User Journey Flow -->
+        <div class="diagram-section">
+            <div class="section-title">🎯 Complete User Journey</div>
+            <div class="mermaid">
+flowchart TD
+    Start([Customer Visits Website]) --> Check{Logged In?}
+    
+    Check -->|No| HomePage[View Home Page<br/>See Menu Items]
+    Check -->|Yes| UserHome[Personalized Home<br/>With Saved Favorites]
+    
+    HomePage --> Browse[Browse Menu<br/>Categories & Items]
+    UserHome --> Browse
+    
+    Browse --> Login{Want to<br/>Save Favorites?}
+    Login -->|Yes| GoogleAuth[Sign In with<br/>Google Account]
+    Login -->|No| Contact[Contact Restaurant]
+    
+    GoogleAuth --> Profile[Your Profile Created<br/>Save Preferences]
+    
+    Profile --> IsAdmin{Are You<br/>Restaurant Staff?}
+    
+    IsAdmin -->|No| UserFeatures[Regular User<br/>Save Favorites<br/>Set Dietary Preferences]
+    IsAdmin -->|Yes| AdminPanel[Admin Dashboard<br/>Manage Everything]
+    
+    AdminPanel --> MenuMgmt[Menu Management<br/>Add/Edit/Remove Items<br/>Reorder Categories]
+    AdminPanel --> UserMgmt[User Management<br/>Add/Remove Admins]
+    AdminPanel --> Settings[Site Settings<br/>Configure Website]
+    
+    MenuMgmt --> CloudSave[(Cloud Database<br/>Firebase)]
+    UserMgmt --> CloudSave
+    Settings --> CloudSave
+    UserFeatures --> CloudSave
+    
+    CloudSave --> RealTime[Real-Time Update]
+    RealTime --> AllUsers[All Users See<br/>Changes Instantly]
+    
+    Contact --> Done([Visit or Call<br/>Restaurant])
+    AllUsers --> Done
+    
+    style Start fill:#d4af37,stroke:#f4e4c1,stroke-width:3px,color:#000
+    style GoogleAuth fill:#4285f4,stroke:#d4af37,stroke-width:2px,color:#fff
+    style AdminPanel fill:#e74c3c,stroke:#d4af37,stroke-width:3px,color:#fff
+    style CloudSave fill:#3498db,stroke:#d4af37,stroke-width:3px,color:#fff
+    style Done fill:#2ecc71,stroke:#d4af37,stroke-width:3px,color:#fff
+            </div>
+        </div>
+
+        <!-- Technical Flow (Simplified) -->
+        <div class="diagram-section">
+            <div class="section-title">⚙️ Behind The Scenes - How Data Flows</div>
+            <div class="mermaid">
+graph LR
+    User([You]) --> Website[Restaurant Website<br/>React App]
+    
+    Website --> Action{What Action?}
+    
+    Action -->|View Menu| Read[Read from<br/>Cloud Database]
+    Action -->|Login| Auth[Google<br/>Authentication]
+    Action -->|Save Changes| Write[Save to<br/>Cloud Database]
+    
+    Read --> Firebase[(Firebase Cloud<br/>Secure Storage)]
+    Auth --> Firebase
+    Write --> Firebase
+    
+    Firebase --> Update[Update All<br/>Connected Users]
+    Update --> Everyone[Everyone Sees<br/>Latest Info]
+    
+    style User fill:#d4af37,stroke:#f4e4c1,stroke-width:3px,color:#000
+    style Website fill:#3498db,stroke:#d4af37,stroke-width:3px,color:#fff
+    style Firebase fill:#e74c3c,stroke:#d4af37,stroke-width:3px,color:#fff
+    style Everyone fill:#2ecc71,stroke:#d4af37,stroke-width:3px,color:#fff
+            </div>
+        </div>
+
+        <!-- Admin Workflow -->
+        <div class="diagram-section">
+            <div class="section-title">👨‍💼 Restaurant Owner/Manager Workflow</div>
+            <div class="mermaid">
+graph TD
+    Owner([Restaurant Owner]) --> Login[Sign In with Google]
+    Login --> Dashboard[Admin Dashboard Opens]
+    
+    Dashboard --> Choose{What to Do?}
+    
+    Choose -->|Update Menu| MenuOps[Menu Operations]
+    Choose -->|Add Staff| StaffOps[Staff Management]
+    Choose -->|Change Settings| SettingsOps[Site Settings]
+    
+    MenuOps --> AddItem[Add New Dish<br/>Name, Price, Description]
+    MenuOps --> EditItem[Edit Existing Item<br/>Change Price/Description]
+    MenuOps --> DeleteItem[Remove Item<br/>No Longer Available]
+    MenuOps --> ReorderItem[Reorder Items<br/>Drag and Drop]
+    
+    StaffOps --> AddAdmin[Add New Admin<br/>Enter Email]
+    StaffOps --> RemoveAdmin[Remove Admin<br/>Revoke Access]
+    
+    SettingsOps --> UpdateInfo[Update Restaurant Info<br/>Hours, Contact, etc]
+    
+    AddItem --> Save[(Save to Cloud)]
+    EditItem --> Save
+    DeleteItem --> Save
+    ReorderItem --> Save
+    AddAdmin --> Save
+    RemoveAdmin --> Save
+    UpdateInfo --> Save
+    
+    Save --> Instant[Instant Update<br/>Live on Website]
+    Instant --> Success([✅ Done!<br/>Customers See Changes])
+    
+    style Owner fill:#d4af37,stroke:#f4e4c1,stroke-width:3px,color:#000
+    style Dashboard fill:#9b59b6,stroke:#d4af37,stroke-width:3px,color:#fff
+    style Save fill:#3498db,stroke:#d4af37,stroke-width:3px,color:#fff
+    style Success fill:#2ecc71,stroke:#d4af37,stroke-width:3px,color:#fff
+            </div>
+        </div>
+
+        <!-- Customer Journey -->
+        <div class="diagram-section">
+            <div class="section-title">👤 Customer Experience Journey</div>
+            <div class="mermaid">
+graph LR
+    Visit([Customer Visits Site]) --> See[See Beautiful<br/>Home Page]
+    See --> Explore[Explore Menu<br/>Browse Categories]
+    
+    Explore --> Decide{Want to<br/>Create Account?}
+    
+    Decide -->|No| ViewOnly[View Menu<br/>Get Info]
+    Decide -->|Yes| SignUp[Quick Sign-In<br/>with Google]
+    
+    SignUp --> Account[Account Created<br/>Instantly]
+    Account --> Features[Use Features:<br/>Save Favorites<br/>Set Preferences<br/>Quick Reorder]
+    
+    ViewOnly --> ContactInfo[Get Contact Info<br/>Location, Hours]
+    Features --> ContactInfo
+    
+    ContactInfo --> Action[Visit Restaurant<br/>or Call to Order]
+    
+    style Visit fill:#d4af37,stroke:#f4e4c1,stroke-width:3px,color:#000
+    style SignUp fill:#4285f4,stroke:#d4af37,stroke-width:2px,color:#fff
+    style Features fill:#9b59b6,stroke:#d4af37,stroke-width:2px,color:#fff
+    style Action fill:#2ecc71,stroke:#d4af37,stroke-width:3px,color:#fff
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 60px; padding: 40px; opacity: 0.7;">
+            <p style="font-size: 1.5rem; color: #d4af37;">🍽️ Gourmet Haus</p>
+            <p style="font-size: 1rem; margin-top: 10px; color: rgba(255, 255, 255, 0.6);">Simple, Secure, and Always Up-to-Date</p>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#d4af37',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#f4e4c1',
+                lineColor: '#d4af37',
+                secondaryColor: '#f4e4c1',
+                tertiaryColor: '#fff',
+                fontSize: '16px',
+                fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif'
+            },
+            flowchart: {
+                curve: 'basis',
+                padding: 20
+            }
+        });
+    </script>
+</body>
+</html>
